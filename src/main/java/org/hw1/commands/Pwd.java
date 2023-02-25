@@ -1,9 +1,9 @@
-package Commands;
+package org.hw1.commands;
 
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-public class Wc implements Command{
+public class Pwd implements Command{
     @Override
     public void setInputStream(PipedInputStream inputStream) {
 
