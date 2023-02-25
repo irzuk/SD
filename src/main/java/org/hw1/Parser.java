@@ -1,4 +1,6 @@
-import Commands.*;
+package org.hw1;
+
+import org.hw1.commands.*;
 
 import java.util.List;
 

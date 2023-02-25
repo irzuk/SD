@@ -1,3 +1,5 @@
+package org.hw1;
+
 import java.util.List;
 
 public class Lexer {

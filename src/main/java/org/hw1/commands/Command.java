@@ -1,4 +1,4 @@
-package Commands;
+package org.hw1.commands;
 
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
