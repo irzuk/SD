@@ -7,13 +7,11 @@ public final class Token {
         this.type = type;
         this.data = data;
     }
-
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Token)) {
+        if (!(obj instanceof Token o)) {
             return false;
         }
-        var o = (Token)obj;
         return this.type.equals(o.type) && this.data.equals(o.data);
     }
 

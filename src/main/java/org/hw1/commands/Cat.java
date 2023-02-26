@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 public class Cat implements Command{
@@ -15,6 +16,10 @@ public class Cat implements Command{
 
     public Cat(@Nullable List<@NotNull String> files) {
         this.files = files;
+    }
+
+    public Cat(String[] files) {
+        this.files = Arrays.stream(files).toList();
     }
 
     @Override
