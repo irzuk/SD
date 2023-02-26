@@ -13,6 +13,10 @@ public class Cat implements Command{
     @Nullable private final List<@NotNull String> files;
     private final int BUF_SIZE = 1024;
 
+    public Cat() {
+        files = null;
+    }
+
     public Cat(@Nullable List<@NotNull String> files) {
         this.files = files;
     }
@@ -52,6 +56,7 @@ public class Cat implements Command{
                     int res = fis.read(buf);
                     while(res != -1) {
                         os.write(buf, 0, res);
+                        os.flush();
                         res = fis.read(buf);
                     }
                     os.write("\n".getBytes(StandardCharsets.UTF_8));
@@ -71,6 +76,7 @@ public class Cat implements Command{
             while (is.available() > 0) {
                 int res = is.read(buf, 0, BUF_SIZE);
                 os.write(buf, 0, res);
+                os.flush();
             }
         } catch (IOException e) {
             System.out.println("cat: can't read input");
