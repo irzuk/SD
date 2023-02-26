@@ -34,9 +34,6 @@ public class Lexer {
                 rawResult.add("|");
                 continue;
             }
-            if (pos == cur_line.length()) {
-                break;
-            }
             for (char quote_kind : quote_kinds) {
                 if (cur_line.charAt(pos) == quote_kind) {
                     int start_token = pos;
@@ -70,7 +67,7 @@ public class Lexer {
             else if (data.endsWith("\"")) {
                 result.add(new Token(TokenType.DoubleQuotes, data));
             }
-            else if (data.endsWith("\'")) {
+            else if (data.endsWith("'")) {
                 result.add(new Token(TokenType.SingleQuotes, data));
             }
             else if (data.contains("=")) {
