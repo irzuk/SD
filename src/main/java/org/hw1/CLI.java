@@ -9,22 +9,17 @@ public class CLI {
     Parser parser;
     CmdManager cmdManager;
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("Hello");
-//        while (true) {
-            // need input stream
-            // System.in.read();
+    public static void main(String[] args) {
+//      while (true) {
+        // give it to lexer
+        // List<String> tokens = Lexer.getCommands(System.in);
 
-            // give it to lexer
-            // org.hw1.Lexer.getTokens();
+        // pass tokens to parser
+        // List<Command> commands = Parser.getCommandsFromTokens(tokens);
 
-            // pass tokens to parser
-            // org.hw1.Parser.getCommandsFromTokens();
-            // + detect exit()
-
-            // pass commands to cmdManager
-            // OutputStream out = org.hw1.CmdManager.startPipline();
-            // getPipeOutputStream to System.out.print();
+        // pass commands to cmdManager
+        // InputStream in = CmdManager.startPipeline(commands);
+        // in.transferTo(System.out);
 //        }
     }
 
