@@ -5,12 +5,19 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
 
-public class Pwd implements Command{
+public class Pwd implements Command {
     private PipedOutputStream os;
 
     @Override
     public void setInputStream(PipedInputStream inputStream) {
-        throw new UnsupportedOperationException();
+
+        //throw new UnsupportedOperationException();
+    }
+
+    public Pwd(String[] parametrs) {
+    }
+
+    public Pwd() {
     }
 
     @Override

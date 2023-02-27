@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 public class Echo implements Command{
@@ -17,6 +18,11 @@ public class Echo implements Command{
     public Echo(@NotNull List<@NotNull String> args) {
         this.args = args;
     }
+
+    public Echo(String[] parametrs) {
+        this.args = Arrays.asList(parametrs);
+    }
+
 
     @Override
     public void setInputStream(PipedInputStream inputStream) {

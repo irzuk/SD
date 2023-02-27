@@ -57,28 +57,34 @@ public class CLI {
         }
 
         Lexer l = new Lexer(input);
-        // while (true) {
-
-        printPrompt(output);
-        // get tokens from InputStream
-        List<Token> resp = l.getTokens();
-        logger.info("Get cmd:");
-        for (var item : resp) {
-            logger.info(item.toString());
-        }
-        logger.info("-- end of cmd");
-
         Parser p = new Parser();
         registerAllCommands(p);
 
-        // parse tokens
-        var cmds = p.parse(resp);
+        while (true) {
 
-        // execute commands in CmdManager
-        InputStream finalInputStream = CmdManager.startPipeline(cmds);
-        finalInputStream.transferTo(output);
+            printPrompt(output);
+            // get tokens from InputStream
+            List<Token> resp = l.getTokens();
+            logger.info("Get cmd:");
+            for (var item : resp) {
+                logger.info(item.toString());
+            }
+            logger.info("-- end of cmd");
 
-        //  }
+            // parse tokens
+            var cmds = p.parse(resp);
+            if (cmds == null) {
+                logger.info("Got exit command");
+                CmdManager.shutDown();
+                return;
+            }
+
+            // execute commands in CmdManager
+            InputStream finalInputStream = CmdManager.startPipeline(cmds);
+            finalInputStream.transferTo(output);
+            logger.info("===== End of Line =====");
+
+        }
 
     }
 
