@@ -83,6 +83,22 @@ public class CLITest {
     }
 
     @Test
+    public void testWc() throws Throwable {
+        String commandWithArgs = "wc " + fileSimple.toString() + "\nexit\n";
+        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
+        var out = new ByteArrayOutputStream();
+        var output = new PrintStream(out);
+
+        CLI.setInput(input);
+        CLI.setOutput(output);
+        CLI.main(null);
+
+        String ans = "1 7 31 " + fileSimple.toString() + "\n";
+        Assert.assertArrayEquals(ans.getBytes(), out.toByteArray());
+
+    }
+
+    @Test
     public void testExec() throws Throwable {
         // cat example.txt | head
         String commandWithArgs = "echo \"Hello world!\"\nexit\n";
@@ -150,7 +166,7 @@ public class CLITest {
     @Test
     public void testEchoWithWc() throws Throwable {
         // echo 123 | wc 1 1 3
-        String commandWithArgs = "echo 123 | wc\nexit\n";
+        String commandWithArgs = "echo \"123\" | wc\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -176,14 +192,13 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("1 7 31\n".getBytes(), out.toByteArray());
+        Assert.assertArrayEquals("3 7 32\n".getBytes(), out.toByteArray());
 
     }
 
 
     @Test
     public void testCatWithCat() throws Throwable {
-        // cat example.txt | wc 1 3 18
         String commandWithArgs = "cat " + fileSimpleSecond.toString() + " | cat " + fileSimple.toString() + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();

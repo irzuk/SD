@@ -24,6 +24,14 @@ public class Wc implements Command {
         this.files = files;
     }
 
+    public Wc(String[] files) {
+        if(files.length != 0) {
+            this.files = Arrays.asList(files);
+        } else {
+            this.files = null;
+        }
+    }
+
     @Override
     public void setInputStream(@Nullable PipedInputStream inputStream) {
         is = inputStream;
