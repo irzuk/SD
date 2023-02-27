@@ -9,6 +9,7 @@ import org.hw1.commands.*;
 
 public class CmdManager {
     // TODO 2 phase : add private static ThreadPoolExecutor executor;
+    private static ThreadPoolExecutor executor;
 
     static InputStream startPipeline(List<Command> commands) throws IOException {
 //        PipedInputStream previousInput;
