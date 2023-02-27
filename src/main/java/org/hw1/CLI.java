@@ -37,6 +37,7 @@ public class CLI {
 //             OutputStream out = org.hw1.CmdManager.startPipline();
 //             getPipeOutputStream to System.out.print();
         }
+
     }
 
 }

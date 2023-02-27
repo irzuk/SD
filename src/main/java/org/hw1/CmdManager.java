@@ -1,29 +1,41 @@
 package org.hw1;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.*;
+import java.nio.channels.Pipe;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.hw1.commands.*;
 
 public class CmdManager {
-    // private static ThreadPoolExecutor executor; TODO 2 phase
+    // TODO 2 phase : add private static ThreadPoolExecutor executor;
 
-    static OutputStream startPipline(List<Command> commands) throws IOException {
-        PipedInputStream previous;
-        for (Command command : commands) {
+    static InputStream startPipeline(List<Command> commands) throws IOException {
+//        PipedInputStream previousInput;
+//        ThreadPoolExecutor executor = new ThreadPoolExecutor();
+//        for (Command command : commands) {
+//
+//            PipedOutputStream out = new PipedOutputStream();
+//            PipedInputStream in = new PipedInputStream(out);
+//
+//            if (previousInput != null) {
+//                command.setInputStream(previousInput);
+//            }
+//
+//            command.setOutputStream(out);
+//            previousInput = in;
+//            executor.execute(command);
+//
+//        }
+//  return previousInput;
 
-            PipedOutputStream out = new PipedOutputStream();
-            PipedInputStream in = new PipedInputStream(out);
+        PipedOutputStream out = new PipedOutputStream();
+        PipedInputStream in = new PipedInputStream(out);
 
-            command.setInputStream(null);
-            command.setOutputStream(null);
-            Thread executor = new Thread(command);
-            executor.start();
-
-        }
-        return null;
+        Command command = commands.get(0);
+        command.setOutputStream(out);
+        Thread executor = new Thread(command);
+        executor.start();
+        return in;
     }
 }
