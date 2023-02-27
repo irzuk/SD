@@ -53,11 +53,10 @@ public class Cat implements Command{
 
     private void catFiles() {
         assert files != null;
+        byte[] buf = new byte[BUF_SIZE];
         for (var fileName : files) {
-            var file = new File(fileName);
-            byte[] buf = new byte[BUF_SIZE];
             try {
-                try(var fis = new FileInputStream(file)) {
+                try(var fis = new FileInputStream(fileName)) {
                     int res = fis.read(buf);
                     while(res != -1) {
                         os.write(buf, 0, res);
@@ -69,7 +68,7 @@ public class Cat implements Command{
                     os.write(String.format("cat: %s: No such file or directory", fileName).getBytes(StandardCharsets.UTF_8));
                 }
             } catch (IOException e) {
-                System.out.printf("cat: can't read file: %s\n", fileName);
+                System.out.printf("cat: I/O exception in file: %s\n", fileName);
             }
         }
     }
@@ -78,13 +77,14 @@ public class Cat implements Command{
         assert is != null;
         byte[] buf = new byte[BUF_SIZE];
         try {
-            while (is.available() > 0) {
-                int res = is.read(buf, 0, BUF_SIZE);
+            int res = is.read(buf, 0, BUF_SIZE);
+            while (res != -1) {
                 os.write(buf, 0, res);
                 os.flush();
+                res = is.read(buf, 0, BUF_SIZE);
             }
         } catch (IOException e) {
-            System.out.println("cat: can't read input");
+            System.out.println("cat: I/O exception in input");
         }
     }
 }
