@@ -3,17 +3,15 @@ package org.hw1.commands;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
+import static org.hw1.commands.CommandsTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WcTest {
@@ -23,71 +21,41 @@ public class WcTest {
 
     @BeforeAll
     public static void checkFiles() throws IOException {
-        if (!Files.exists(dirPath)) {
-            Files.createDirectories(dirPath);
-        }
-        if (!Files.exists(fileSimple)) {
-            Files.createFile(fileSimple);
-            try (var writer = new FileWriter(fileSimple.toFile())) {
-                writer.write("Hello   Simple    \n");
-            }
-        }
-        if (!Files.exists(fileSimpleSecond)) {
-            Files.createFile(fileSimpleSecond);
-            try (var writer = new FileWriter(fileSimpleSecond.toFile())) {
-                writer.write("    Hello Second\n Simple");
-            }
-        }
+        checkDirAndCreate(dirPath);
+        checkFileAndWrite(fileSimple, "Hello   Simple    \n");
+        checkFileAndWrite(fileSimpleSecond, "    Hello Second\n Simple");
     }
 
     @Test
     public void testSimple() throws IOException, InterruptedException {
         var is = new PipedInputStream();
-        var os = new PipedOutputStream();
-        os.connect(is);
+        var os = new PipedOutputStream(is);
         var wc = new Wc(List.of(fileSimple.toString()));
         wc.setOutputStream(os);
         var t = new Thread(wc);
         t.start();
-        int BUF_SIZE = 100;
-        var buf = new byte[BUF_SIZE];
-        int res = is.read(buf);
-        int off = res;
-        while (res != -1) {
-            res = is.read(buf, off, BUF_SIZE - off);
-            off += res;
-        }
-        t.join();
-        var str = new String(Arrays.copyOfRange(buf, 0, off + 1), StandardCharsets.UTF_8);
+        var str = readAllSmall(is);
         String checkString = String.format("2 2 19 %s\n", fileSimple);
         assertEquals(checkString, str);
+        t.join();
     }
 
     @Test
     public void testSimilar() throws IOException, InterruptedException {
         var is = new PipedInputStream();
-        var os = new PipedOutputStream();
-        os.connect(is);
+        var os = new PipedOutputStream(is);
         var wc = new Wc(List.of(fileSimple.toString(), fileSimpleSecond.toString()));
         wc.setOutputStream(os);
         var t = new Thread(wc);
         t.start();
-        int BUF_SIZE = 1024;
-        var buf = new byte[BUF_SIZE];
-        int res = is.read(buf);
-        int off = res;
-        while (res != -1) {
-            res = is.read(buf, off, BUF_SIZE - off);
-            off += res;
-        }
-        t.join();
-        var str = new String(Arrays.copyOfRange(buf, 0, off + 1), StandardCharsets.UTF_8);
+        var str = readAllSmall(is);
         String checkString = String.format("""
             2 2 19 %s
             2 3 24 %s
             4 5 43 total
             """, fileSimple, fileSimpleSecond);
         assertEquals(checkString, str);
+        t.join();
     }
 
     @Test
@@ -113,17 +81,9 @@ public class WcTest {
         var worker = new Thread(wc);
         writer.start();
         worker.start();
-        int BUF_SIZE = 1024;
-        var buf = new byte[BUF_SIZE];
-        int res = toRead.read(buf);
-        int off = res;
-        while (res != -1) {
-            res = toRead.read(buf, off, BUF_SIZE - off);
-            off += res;
-        }
+        var str = readAllSmall(toRead);
+        assertEquals("2 4 24\n", str);
         writer.join();
         worker.join();
-        var str = new String(Arrays.copyOfRange(buf, 0, off + 1), StandardCharsets.UTF_8);
-        assertEquals("2 4 24\n", str);
     }
 }

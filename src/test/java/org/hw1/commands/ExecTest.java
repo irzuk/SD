@@ -1,72 +1,53 @@
 package org.hw1.commands;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
+import static org.hw1.commands.CommandsTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExecTest {
-    static final Path dirPath = Paths.get("src/test/resources/commands/exec");
-    static final Path lsCheck = Paths.get(dirPath + "/lsCheck");
-    static final Path lsCheckA = Paths.get(lsCheck + "/a.txt");
-    static final Path lsCheckB = Paths.get(lsCheck + "/b.txt");
-    static final Path scriptFile = Paths.get(dirPath + "/script.sh");
+    private static final Path dirPath = Paths.get("src/test/resources/commands/exec");
+    private static final Path lsCheck = Paths.get(dirPath + "/lsCheck");
+    private static final Path lsCheckA = Paths.get(lsCheck + "/a.txt");
+    private static final Path lsCheckB = Paths.get(lsCheck + "/b.txt");
+    private static final Path scriptFile = Paths.get(dirPath + "/script.sh");
 
     @BeforeAll
     public static void checkFiles() throws IOException {
-        if (!Files.exists(dirPath)) {
-            Files.createDirectories(dirPath);
-        }
-        if (!Files.exists(lsCheck)) {
-            Files.createDirectories(lsCheck);
-        }
-        if (!Files.exists(lsCheckA)) {
-            Files.createFile(lsCheckA);
-        }
-        if (!Files.exists(lsCheckB)) {
-            Files.createFile(lsCheckB);
-        }
-        if (!Files.exists(scriptFile)) {
-            Files.createFile(scriptFile);
-            try (var writer = new FileWriter(scriptFile.toFile())) {
-                writer.write("""
+        checkDirAndCreate(dirPath);
+        checkDirAndCreate(lsCheck);
+        checkFileAndWrite(lsCheckA, "a");
+        checkFileAndWrite(lsCheckB, "b");
+        checkFileAndWrite(scriptFile, """
                     #!/bin/bash
                                         
                     echo "Hello, exec!" | wc
                     """);
-            }
-            assertTrue(scriptFile.toFile().setExecutable(true));
-        }
+        assertTrue(scriptFile.toFile().setExecutable(true));
     }
 
-    @Test
-    public void testExecLs() throws IOException {
-        var exec = new Exec(new String[]{"ls", lsCheck.toString()});
+    private static @NotNull InputStream createAndStartExec(@NotNull String @NotNull[] cmdarray) throws IOException {
+        var exec = new Exec(cmdarray);
         var is = new PipedInputStream();
         var os = new PipedOutputStream(is);
         exec.setOutputStream(os);
         var checker = new Thread(exec);
         checker.start();
-        int BUF_SIZE = 1024;
-        var buf = new byte[BUF_SIZE];
-        int res = is.read(buf);
-        int off = 0;
-        while(res != -1) {
-            off += res;
-            res = is.read(buf, off, BUF_SIZE - off);
-        }
-        var str = new String(Arrays.copyOfRange(buf, 0, off), StandardCharsets.UTF_8);
+        return is;
+    }
+
+    @Test
+    public void testExecLs() throws IOException {
+        String cmd = System.getProperty("os.name").toLowerCase().startsWith("windows") ? "dir" : "ls";
+        var is = createAndStartExec(new String[]{cmd, lsCheck.toString()});
+        var str = readAllSmall(is);
         assertEquals("""
             a.txt
             b.txt
@@ -75,22 +56,11 @@ public class ExecTest {
 
     @Test
     public void testBashScript() throws IOException {
-        var exec = new Exec(new String[]{scriptFile.toString()});
-        var is = new PipedInputStream();
-        var os = new PipedOutputStream(is);
-        exec.setOutputStream(os);
-        var checker = new Thread(exec);
-        checker.start();
-        int BUF_SIZE = 1024;
-        var buf = new byte[BUF_SIZE];
-        int res = is.read(buf);
-        int off = 0;
-        while(res != -1) {
-            off += res;
-            res = is.read(buf, off, BUF_SIZE - off);
+        if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            var is = createAndStartExec(new String[]{scriptFile.toString()});
+            var str = readAllSmall(is);
+            var checkStr = "      1       2      13\n";
+            assertEquals(checkStr, str);
         }
-        var str = new String(Arrays.copyOfRange(buf, 0, off), StandardCharsets.UTF_8);
-        var checkStr = "      1       2      13\n";
-        assertEquals(checkStr, str);
     }
 }
