@@ -1,6 +1,7 @@
 package org.hw1;
 
 import org.hw1.commands.Cat;
+import org.hw1.commands.Echo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +58,18 @@ public class ParserTest {
         Assertions.assertTrue(cmds.size() == 2);
         Assertions.assertInstanceOf(Cat.class, cmds.get(0));
         Assertions.assertInstanceOf(Cat.class, cmds.get(1));
+    }
+
+    @Test
+    public void testQuotedEnvVar() throws Throwable {
+        Lexer l = new Lexer(new ByteArrayInputStream("FILE=\"KEK LOL\" echo $FILE\n".getBytes(StandardCharsets.UTF_8)));
+        var tokens = l.getTokens();
+        Parser p = new Parser();
+        p.registerCommand("cat", Cat.class);
+        p.registerCommand("echo", Echo.class);
+        var cmds = p.parse(tokens);
+        Assertions.assertTrue(cmds.size() == 1);
+        Assertions.assertInstanceOf(Echo.class, cmds.get(0));
     }
 
 }

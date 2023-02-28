@@ -5,24 +5,24 @@ import org.hw1.commands.Echo;
 import org.hw1.commands.Pwd;
 import org.hw1.commands.Wc;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class CLI {
+    private static InputStream input = System.in;
+    private static PrintStream output = System.out;
     Lexer lexer;
     Parser parser;
     CmdManager cmdManager;
 
-
     private static void printPrompt(PrintStream os) {
         //os.print("user@machine:/cur/dir$ ");
     }
-
-    private static InputStream input = System.in;
-    private static PrintStream output = System.out;
 
     public static void setInput(InputStream is) {
         input = is;
@@ -81,7 +81,9 @@ public class CLI {
 
             // execute commands in CmdManager
             InputStream finalInputStream = CmdManager.startPipeline(cmds);
-            finalInputStream.transferTo(output);
+            if (finalInputStream != null) { // in case of empty pipeline
+                finalInputStream.transferTo(output);
+            }
             logger.info("===== End of Line =====");
 
         }

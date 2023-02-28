@@ -17,6 +17,16 @@ public class Parser {
         this.envVars = new HashMap<>();
     }
 
+    // TODO(mkornaukhov03)
+    // * Support previous env. vars in new env. vars definitions
+
+    private static String omitQuotes(String s) {
+        if (s.length() >= 2 && s.charAt(0) == s.charAt(s.length() - 1) && ((s.charAt(0) == '\'') || (s.charAt(0) == '"'))) {
+            return s.substring(1, s.length() - 1);
+        }
+        return s;
+    }
+
     public List<Command> parse(List<Token> tokens) throws RuntimeException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         /*
          * Algorithm:
@@ -32,19 +42,18 @@ public class Parser {
 
         tokens = tokens.stream().peek(token -> {
                     if (token.type == TokenType.EnvVarDef) {
-                        System.out.println("HERE!!!");
                         String data = token.data;
                         if (!data.contains("=")) {
                             throw new RuntimeException(new ParseException("Invalid env. var definition", -1));
                         }
                         String[] kv = data.split("=");
-                        envVars.put(kv[0], kv[1]);
+                        envVars.put(kv[0], omitQuotes(kv[1]));
                     }
                 }).filter(token -> token.type != TokenType.EnvVarDef)
                 .map(token -> {
                     if (token.type == TokenType.DoubleQuotes) {
-                        String data = token.data.substring(1, token.data.length() - 1);
-                        return new Token(TokenType.Name, data);
+                        String data = omitQuotes(token.data);
+                        return new Token(TokenType.EnvVarUse, data);
                     }
                     return token;
                 })
@@ -57,7 +66,7 @@ public class Parser {
                                 newData.append(oldData.charAt(startKey));
                                 startKey++;
                             }
-                            if (oldData.charAt(startKey) == '$') {
+                            if (startKey < oldData.length() && oldData.charAt(startKey) == '$') {
                                 startKey++;
                                 int endKey = startKey;
                                 while (endKey < oldData.length() && oldData.charAt(endKey) != '$') {
@@ -75,7 +84,7 @@ public class Parser {
                         return new Token(TokenType.Name, newData.toString());
                     }
                     if (token.type == TokenType.SingleQuotes) {
-                        return new Token(TokenType.Name, token.data.substring(1, token.data.length() - 1));
+                        return new Token(TokenType.Name, omitQuotes(token.data));
                     }
                     return token;
                 }).toList();
@@ -96,6 +105,9 @@ public class Parser {
 
         List<Command> result = new ArrayList<>();
         for (var cmdAndParams : strResult) {
+            if (cmdAndParams.isEmpty()) {
+                continue; // Definition of new env. var
+            }
             Class cmd = this.registeredCommands.get(cmdAndParams.get(0));
             /*
              * TODO

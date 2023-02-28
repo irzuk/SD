@@ -82,6 +82,8 @@ public class CLITest {
 
     }
 
+    // Fails for now
+    // TODO(Deuqz)
     @Test
     public void testWc() throws Throwable {
         String commandWithArgs = "wc " + fileSimple.toString() + "\nexit\n";
@@ -116,7 +118,6 @@ public class CLITest {
 
     @Test
     public void testVarWithCat() throws Throwable {
-// TODO: java.lang.IndexOutOfBoundsException at org.hw1.Parser.parse(Parser.java:99)
         String commandWithArgs = "FILE=" + fileSimple.toString() + "\ncat $FILE\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
@@ -132,7 +133,6 @@ public class CLITest {
 
     @Test
     public void testVarWithEcho() throws Throwable {
-// TODO: java.lang.IndexOutOfBoundsException at org.hw1.Parser.parse(Parser.java:99)
         String commandWithArgs = "VAR=Hello\necho $VAR\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
@@ -148,7 +148,6 @@ public class CLITest {
 
     @Test
     public void testVarWithEchoDoubleQuotes() throws Throwable {
-// TODO: java.lang.AssertionError at org.hw1.Parser.parse(Parser.java:104)
         String commandWithArgs = "VAR=\"Hello World!\"\necho $VAR\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();

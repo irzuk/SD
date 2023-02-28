@@ -52,6 +52,21 @@ public class Lexer {
             }
             int start_token = pos;
             while (pos < cur_line.length() && !shouldSkip.test(cur_line.charAt(pos))) {
+                for (char quote_kind : quote_kinds) {
+                    if (cur_line.charAt(pos) == quote_kind) {
+                        pos++;
+                        while (pos < cur_line.length() && cur_line.charAt(pos) != quote_kind) {
+                            pos++;
+                        }
+                        if (pos == cur_line.length()) {
+                            throw new ParseException("Unpaired " + quote_kind, start_token);
+                        }
+                        pos++;
+
+                        rawResult.add(cur_line.substring(start_token, pos));
+                        continue main_loop;
+                    }
+                }
                 pos++;
             }
             rawResult.add(cur_line.substring(start_token, pos));
@@ -64,10 +79,10 @@ public class Lexer {
             if (data.equals("|")) {
                 result.add(new Token(TokenType.Pipe, data));
             }
-            else if (data.endsWith("\"")) {
+            else if (data.charAt(0) == '"') {
                 result.add(new Token(TokenType.DoubleQuotes, data));
             }
-            else if (data.endsWith("'")) {
+            else if (data.charAt(0) == '\'') {
                 result.add(new Token(TokenType.SingleQuotes, data));
             }
             else if (data.contains("=")) {

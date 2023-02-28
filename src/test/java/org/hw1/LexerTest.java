@@ -75,4 +75,14 @@ public class LexerTest {
 
     }
 
+    @Test
+    public void testQuotedEnvVar() throws Throwable {
+        checkOne("VAR=\"KEK LOL\"\n", List.of(
+                new Token(TokenType.EnvVarDef, "VAR=\"KEK LOL\"")
+        ));
+        checkOne("VAR='KEK LOL'\n", List.of(
+                new Token(TokenType.EnvVarDef, "VAR='KEK LOL'")
+        ));
+    }
+
 }
