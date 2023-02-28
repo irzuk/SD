@@ -16,9 +16,12 @@ import java.util.logging.SimpleFormatter;
 public class CLI {
     private static InputStream input = System.in;
     private static PrintStream output = System.out;
-    Lexer lexer;
-    Parser parser;
-    CmdManager cmdManager;
+
+    private static boolean inTestMode = false;
+
+    public static void isInTestMode(boolean flag) {
+        inTestMode = flag;
+    }
 
     private static void printPrompt(PrintStream os) {
         //os.print("user@machine:/cur/dir$ ");
@@ -77,6 +80,10 @@ public class CLI {
                 logger.info("Got exit command");
                 CmdManager.shutDown();
                 return;
+            }
+
+            if (inTestMode) {
+                CmdManager.startThreadPool();
             }
 
             // execute commands in CmdManager

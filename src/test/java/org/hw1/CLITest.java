@@ -1,6 +1,7 @@
 package org.hw1;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +19,11 @@ public class CLITest {
     private static final Path fileSimple = Paths.get(dirPath + "/CatTestSimple.txt");
     private static final Path fileSimpleSecond = Paths.get(dirPath + "/CatTestSimpleSecond.txt");
 
-//    x=ex y=it $x$y
+    @BeforeAll
+    private static void setTestMode() {
+        CLI.isInTestMode(true);
+    }
+
 
     @Test
     public void testExit() throws Throwable {
@@ -100,6 +105,8 @@ public class CLITest {
 
     }
 
+    // TODO: impl Exec
+    //
     @Test
     public void testExec() throws Throwable {
         // cat example.txt | head
@@ -115,6 +122,22 @@ public class CLITest {
         Assert.assertArrayEquals("Hello world!".getBytes(), out.toByteArray());
 
     }
+
+    @Test
+    public void testVar() throws Throwable {
+        String commandWithArgs = "FILE=" + fileSimple.toString() + "\nexit\n";
+        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
+        var out = new ByteArrayOutputStream();
+        var output = new PrintStream(out);
+
+        CLI.setInput(input);
+        CLI.setOutput(output);
+        CLI.main(null);
+
+        Assert.assertEquals(0, out.size());
+
+    }
+
 
     @Test
     public void testVarWithCat() throws Throwable {
@@ -158,6 +181,22 @@ public class CLITest {
         CLI.main(null);
 
         Assert.assertArrayEquals("Hello World!".getBytes(), out.toByteArray());
+
+    }
+
+    @Test
+    public void testTwoVarsWithEcho() throws Throwable {
+        //  x=ex y=it $x$y
+        String commandWithArgs = "x=ex\ny=it\necho $x$y\necho $x\nexit\n";
+        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
+        var out = new ByteArrayOutputStream();
+        var output = new PrintStream(out);
+
+        CLI.setInput(input);
+        CLI.setOutput(output);
+        CLI.main(null);
+
+        Assert.assertArrayEquals("exitex".getBytes(), out.toByteArray());
 
     }
 

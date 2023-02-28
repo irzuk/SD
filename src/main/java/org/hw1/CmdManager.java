@@ -13,7 +13,7 @@ public class CmdManager {
     // TODO 2 phase : add private static ThreadPoolExecutor executor;
     //private static ThreadPoolExecutor executor;
 
-    private static ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(5);
+    private static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
 
 
     static InputStream startPipeline(List<Command> commands) throws IOException {
@@ -45,9 +45,13 @@ public class CmdManager {
     }
 
     static public void shutDown() {
-        if(executor != null){
+        if (executor != null) {
             executor.shutdownNow();
         }
 
+    }
+
+    static public void startThreadPool() {
+        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
     }
 }
