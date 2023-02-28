@@ -59,7 +59,8 @@ public class WcTest {
         }
         t.join();
         var str = new String(Arrays.copyOfRange(buf, 0, off + 1), StandardCharsets.UTF_8);
-        assertEquals("2 2 19 src\\test\\resources\\commands\\wc\\WcTestSimple.txt\n", str);
+        String checkString = String.format("2 2 19 %s\n", fileSimple);
+        assertEquals(checkString, str);
     }
 
     @Test
@@ -81,11 +82,12 @@ public class WcTest {
         }
         t.join();
         var str = new String(Arrays.copyOfRange(buf, 0, off + 1), StandardCharsets.UTF_8);
-        assertEquals("""
-                2 2 19 src\\test\\resources\\commands\\wc\\WcTestSimple.txt
-                2 3 24 src\\test\\resources\\commands\\wc\\WcTestSimpleSecond.txt
-                4 5 43 total
-                """, str);
+        String checkString = String.format("""
+            2 2 19 %s
+            2 3 24 %s
+            4 5 43 total
+            """, fileSimple, fileSimpleSecond);
+        assertEquals(checkString, str);
     }
 
     @Test
