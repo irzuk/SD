@@ -18,6 +18,8 @@ public class CLITest {
     private static final Path dirPath = Paths.get("src/test/resources/commands/cat");
     private static final Path fileSimple = Paths.get(dirPath + "/CatTestSimple.txt");
     private static final Path fileSimpleSecond = Paths.get(dirPath + "/CatTestSimpleSecond.txt");
+    private static final Path dirPathExec = Paths.get("src/test/resources/commands/exec");
+    private static final Path scriptFile = Paths.get(dirPathExec + "/script.sh");
 
     @BeforeAll
     private static void setTestMode() {
@@ -100,17 +102,15 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        String ans = "1 7 31 " + fileSimple.toString() + "\n";
+        String ans = "2 7 31 " + fileSimple.toString() + "\n";
         Assert.assertArrayEquals(ans.getBytes(), out.toByteArray());
 
     }
 
-    // TODO: impl Exec
-    //
     @Test
     public void testExec() throws Throwable {
-        // cat example.txt | head
-        String commandWithArgs = "echo \"Hello world!\"\nexit\n";
+        // script test
+        String commandWithArgs = scriptFile.toString() + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -119,7 +119,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("Hello world!".getBytes(), out.toByteArray());
+        Assert.assertArrayEquals("       1       2      13\n".getBytes(), out.toByteArray());
 
     }
 

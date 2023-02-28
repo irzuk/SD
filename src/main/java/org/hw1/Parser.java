@@ -1,6 +1,7 @@
 package org.hw1;
 
 import org.hw1.commands.Command;
+import org.hw1.commands.Exec;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
@@ -41,15 +42,15 @@ public class Parser {
         // Idea: omit double quotes, mark these tokens as `EnvVarUse`before step 2-4
 
         tokens = tokens.stream().peek(token -> {
-                    if (token.type == TokenType.EnvVarDef) {
-                        String data = token.data;
-                        if (!data.contains("=")) {
-                            throw new RuntimeException(new ParseException("Invalid env. var definition", -1));
-                        }
-                        String[] kv = data.split("=");
-                        envVars.put(kv[0], omitQuotes(kv[1]));
-                    }
-                }).filter(token -> token.type != TokenType.EnvVarDef)
+            if (token.type == TokenType.EnvVarDef) {
+                String data = token.data;
+                if (!data.contains("=")) {
+                    throw new RuntimeException(new ParseException("Invalid env. var definition", -1));
+                }
+                String[] kv = data.split("=");
+                envVars.put(kv[0], omitQuotes(kv[1]));
+            }
+        }).filter(token -> token.type != TokenType.EnvVarDef)
                 .map(token -> {
                     if (token.type == TokenType.DoubleQuotes) {
                         String data = omitQuotes(token.data);
@@ -109,14 +110,16 @@ public class Parser {
                 continue; // Definition of new env. var
             }
             Class cmd = this.registeredCommands.get(cmdAndParams.get(0));
-            /*
-             * TODO
-             * if cmd == null then create Exec command
-             * */
-            assert (cmd != null);
-            cmdAndParams.remove(0);
-            String[] asArr = cmdAndParams.toArray(new String[0]);
-            result.add((Command) cmd.getConstructor(String[].class).newInstance(new Object[]{asArr}));
+
+            if (cmd == null) {
+                String[] asArr = cmdAndParams.toArray(new String[0]);
+                result.add(new Exec(asArr));
+            } else {
+                cmdAndParams.remove(0);
+                String[] asArr = cmdAndParams.toArray(new String[0]);
+                result.add((Command) cmd.getConstructor(String[].class).newInstance(new Object[]{asArr}));
+            }
+
         }
 
 
