@@ -1,54 +1,70 @@
 package org.hw1.commands;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
 public class Exec implements Command {
-
-    private String commandToExec;
+    @NotNull
+    private final String @NotNull [] cmdarray;
     @Nullable
     private PipedInputStream is;
+    @Nullable
     private PipedOutputStream os;
+    private final int BUF_SIZE = 1024;
 
     // first param is name of command
-    public Exec(String[] params) {
-        if (params.length == 0) {
-            throw new UnsupportedOperationException();
-        } else {
-            StringBuilder builder = new StringBuilder();
-            for (var token : params) {
-                builder.append(token);
-            }
-            commandToExec = builder.toString();
-        }
+    public Exec(String[] cmdarray) {
+        assert cmdarray.length != 0;
+        this.cmdarray = cmdarray;
     }
 
     @Override
-    public void setInputStream(PipedInputStream inputStream) {
+    public void setInputStream(@Nullable PipedInputStream inputStream) {
         is = inputStream;
     }
 
     @Override
-    public void setOutputStream(PipedOutputStream outputStream) {
+    public void setOutputStream(@Nullable PipedOutputStream outputStream) {
         os = outputStream;
     }
 
     @Override
     public void run() {
-        String homeDirectory = System.getProperty("user.home");
-        Process process;
-
         try {
-            process = Runtime.getRuntime()
-                    .exec(String.format(commandToExec, homeDirectory));
-            OutputStream out = process.getOutputStream();
-            InputStream in = process.getInputStream();
-
-
+            var process = Runtime.getRuntime().exec(cmdarray);
+            var processOut = process.getOutputStream();
+            var processIn = process.getInputStream();
+            writeInProcess(processOut);
+            readFromProcess(processIn);
+            if (os != null) {
+                os.close();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.printf("exec: can't run %s\n", String.join(" ", cmdarray));
         }
+    }
 
+    private void writeInProcess(@Nullable OutputStream processOut) throws IOException {
+        if (is != null && processOut != null) {
+            var buf = new byte[BUF_SIZE];
+            int res = is.read(buf);
+            while(res != -1) {
+                processOut.write(buf, 0, res);
+                res = is.read(buf);
+            }
+        }
+    }
+
+    private void readFromProcess(@Nullable InputStream processIn) throws IOException {
+        if(os != null && processIn != null) {
+            var buf = new byte[BUF_SIZE];
+            int res = processIn.read(buf);
+            while(res != -1) {
+                os.write(buf, 0, res);
+                res = processIn.read(buf);
+            }
+        }
     }
 }
