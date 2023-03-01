@@ -34,7 +34,7 @@ public class CLILogger {
         logger.info(message);
     }
 
-    public void warning(String message) {
+    public void error(String message) {
         logger.warning(message);
     }
 }

@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
+import static org.hw1.commands.CommandUtils.processException;
+
 public class Exec implements Command {
     private static final CLILogger LOG = new CLILogger("Exec");
     @NotNull
@@ -14,6 +16,7 @@ public class Exec implements Command {
     private PipedInputStream is;
     @Nullable
     private PipedOutputStream os;
+    private PrintStream errS;
     private final int BUF_SIZE = 1024;
 
     // first param is name of command
@@ -33,18 +36,31 @@ public class Exec implements Command {
     }
 
     @Override
+    public void setErrorStream(@NotNull PrintStream errorStream) {
+        errS = errorStream;
+    }
+
+    @Override
     public void run() {
         try {
-            var process = Runtime.getRuntime().exec(cmdarray);
-            var processOut = process.getOutputStream();
-            var processIn = process.getInputStream();
-            writeInProcess(processOut);
-            readFromProcess(processIn);
+            try {
+                var process = Runtime.getRuntime().exec(cmdarray);
+                var processOut = process.getOutputStream();
+                var processIn = process.getInputStream();
+                writeInProcess(processOut);
+                readFromProcess(processIn);
+            } catch (IOException e) {
+                if (e.getMessage().startsWith("Cannot run program")) {
+                    errS.printf("Command %s not found\n", cmdarray[0]);
+                } else {
+                    throw e;
+                }
+            }
             if (os != null) {
                 os.close();
             }
         } catch (IOException e) {
-            LOG.warning(String.format("exec: can't run %s\n", String.join(" ", cmdarray)));
+            processException(errS, LOG, e, "Exec", String.format("exec: can't run %s\n", String.join(" ", cmdarray)));
         }
     }
 
@@ -52,7 +68,7 @@ public class Exec implements Command {
         if (is != null && processOut != null) {
             var buf = new byte[BUF_SIZE];
             int res = is.read(buf);
-            while(res != -1) {
+            while (res != -1) {
                 processOut.write(buf, 0, res);
                 res = is.read(buf);
             }
@@ -60,10 +76,10 @@ public class Exec implements Command {
     }
 
     private void readFromProcess(@Nullable InputStream processIn) throws IOException {
-        if(os != null && processIn != null) {
+        if (os != null && processIn != null) {
             var buf = new byte[BUF_SIZE];
             int res = processIn.read(buf);
-            while(res != -1) {
+            while (res != -1) {
                 os.write(buf, 0, res);
                 res = processIn.read(buf);
             }

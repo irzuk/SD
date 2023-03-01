@@ -11,11 +11,14 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hw1.commands.CommandUtils.processException;
+
 public class Wc implements Command {
     private static final CLILogger LOG = new CLILogger("Cat");
     private final List<@NotNull String> files;
     private PipedInputStream is;
     private PipedOutputStream os;
+    private PrintStream errS;
     private final int BUF_SIZE = 1024;
 
     public Wc() {
@@ -46,6 +49,11 @@ public class Wc implements Command {
     }
 
     @Override
+    public void setErrorStream(@NotNull PrintStream errorStream) {
+        errS = errorStream;
+    }
+
+    @Override
     public void run() {
         if (files != null) {
             wcFiles();
@@ -55,7 +63,8 @@ public class Wc implements Command {
         try {
             os.close();
         } catch (IOException e) {
-            LOG.warning("wc: can't close output");
+            errS.println("wc: can't close output");
+            LOG.error("Wc exception " + e.getMessage());
         }
     }
 
@@ -74,7 +83,7 @@ public class Wc implements Command {
                     os.write(String.format("wc: %s: No such file or directory", fileName).getBytes(StandardCharsets.UTF_8));
                     os.flush();
                 } catch (IOException e) {
-                    LOG.warning(String.format("wc: I/O exception in file: %s", fileName));
+                    processException(errS, LOG, e, "Wc", String.format("wc: I/O exception in file: %s\n", fileName));
                 }
                 continue;
             }
@@ -93,7 +102,7 @@ public class Wc implements Command {
                 }
                 os.flush();
             } catch (IOException e) {
-                LOG.warning(String.format("wc: I/O exception in file: %s\n", fileName));
+                processException(errS, LOG, e, "Wc", String.format("wc: I/O exception in file: %s\n", fileName));
             }
             totalLines += lines;
             totalWords += words;
@@ -104,7 +113,7 @@ public class Wc implements Command {
                 os.write(String.format("%d %d %d total", totalLines, totalWords, totalBytes).getBytes(StandardCharsets.UTF_8));
                 os.flush();
             } catch (IOException e) {
-                LOG.warning("wc: can't write in output");
+                processException(errS, LOG, e, "wc", "wc: can't write in output");
             }
         }
     }
@@ -127,7 +136,7 @@ public class Wc implements Command {
             os.write(String.format("%6d %6d %6d", lines, words, bytes).getBytes(StandardCharsets.UTF_8));
             os.flush();
         } catch (IOException e) {
-            LOG.warning("wc: exception in pipeline");
+            processException(errS, LOG, e, "Wc", "wc: exception in pipeline");
         }
     }
 

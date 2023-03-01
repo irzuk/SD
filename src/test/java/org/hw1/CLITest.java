@@ -21,7 +21,7 @@ public class CLITest {
 
     @BeforeAll
     public static void setTestMode() {
-        CLI.isInTestMode(true);
+        CLI.setTestMode(true);
     }
 
     @Test

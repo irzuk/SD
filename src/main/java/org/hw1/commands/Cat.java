@@ -9,10 +9,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hw1.commands.CommandUtils.processException;
+
 public class Cat implements Command{
     private static final CLILogger LOG = new CLILogger("Cat");
     @Nullable private PipedInputStream is;
     private PipedOutputStream os;
+    private PrintStream errS;
     @Nullable private final List<@NotNull String> files;
     private final int BUF_SIZE = 1024;
 
@@ -40,6 +43,11 @@ public class Cat implements Command{
     }
 
     @Override
+    public void setErrorStream(@NotNull PrintStream errorStream) {
+        errS = errorStream;
+    }
+
+    @Override
     public void run() {
         assert os != null;
         if (files != null) {
@@ -50,7 +58,7 @@ public class Cat implements Command{
         try {
             os.close();
         } catch (IOException e) {
-            LOG.warning("cat: can't close output");
+            processException(errS, LOG, e, "Cat", "cat: can't close output");
         }
     }
 
@@ -77,7 +85,7 @@ public class Cat implements Command{
                     os.flush();
                 }
             } catch (IOException e) {
-                LOG.warning(String.format("cat: I/O exception in file: %s\n", fileName));
+                processException(errS, LOG, e, "Cat", String.format("cat: I/O exception in file: %s\n", fileName));
             }
         }
     }
@@ -93,7 +101,7 @@ public class Cat implements Command{
                 res = is.read(buf, 0, BUF_SIZE);
             }
         } catch (IOException e) {
-            LOG.warning("cat: I/O exception in input");
+            processException(errS, LOG, e, "Cat", "cat: I/O exception on input");
         }
     }
 }

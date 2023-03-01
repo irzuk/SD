@@ -4,34 +4,58 @@ import org.hw1.commands.Cat;
 import org.hw1.commands.Echo;
 import org.hw1.commands.Pwd;
 import org.hw1.commands.Wc;
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.List;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class CLI {
     private static final CLILogger LOG = new CLILogger("CLI");
     private static InputStream input = System.in;
     private static PrintStream output = System.out;
+    private static PrintStream errStream = System.err;
+    private static final String prompt;
+
+    static {
+        try {
+            prompt = String.format("%s@%s:%s$ ", System.getProperty("user.name"),
+                InetAddress.getLocalHost().getHostName(),
+                System.getProperty("user.dir"));
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+        CmdManager.setErrStream(errStream);
+    }
 
     private static boolean inTestMode = false;
 
-    public static void isInTestMode(boolean flag) {
+    @TestOnly
+    public static void setTestMode(boolean flag) {
         inTestMode = flag;
     }
 
     private static void printPrompt(PrintStream os) {
         if (!inTestMode) {
-            os.print("user@machine:/cur/dir$ ");
+            os.print(prompt);
         }
     }
 
+    @TestOnly
     public static void setInput(InputStream is) {
         input = is;
     }
 
+    @TestOnly
     public static void setOutput(PrintStream os) {
         output = os;
+    }
+
+    @TestOnly
+    public static void setErrStream(PrintStream errStream) {
+        CLI.errStream = errStream;
+        CmdManager.setErrStream(errStream);
     }
 
     private static void registerAllCommands(Parser p) {
@@ -43,14 +67,14 @@ public class CLI {
 
     public static void main(String[] args) throws Exception {
 
-        Lexer l = new Lexer(input);
-        Parser p = new Parser();
+        var l = new Lexer(input);
+        var p = new Parser();
         registerAllCommands(p);
 
         while (true) {
             printPrompt(output);
             // get tokens from InputStream
-            List<Token> resp = l.getTokens();
+            var resp = l.getTokens();
             LOG.info("Get cmd:");
             for (var item : resp) {
                 LOG.info(item.toString());
@@ -70,7 +94,7 @@ public class CLI {
             }
 
             // execute commands in CmdManager
-            InputStream finalInputStream = CmdManager.startPipeline(cmds);
+            var finalInputStream = CmdManager.startPipeline(cmds);
             if (finalInputStream != null) { // in case of empty pipeline
                 finalInputStream.transferTo(output);
             }
