@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 public class Pwd implements Command {
+    private static final Logger LOG = Logger.getLogger("Exec");
     private PipedOutputStream os;
 
     @Override
     public void setInputStream(PipedInputStream inputStream) {
-
-        //throw new UnsupportedOperationException();
     }
 
-    public Pwd(String[] parametrs) {
+    @SuppressWarnings("unused")
+    public Pwd(String[] parametrs) { // Need for parser
     }
 
     public Pwd() {
@@ -32,12 +33,12 @@ public class Pwd implements Command {
             os.write(path.getBytes(StandardCharsets.UTF_8));
             os.flush();
         } catch (IOException e) {
-            System.out.println("Can't write path");
+            LOG.warning("Can't write path");
         }
         try {
             os.close();
         } catch (IOException e) {
-            System.out.println("Pwd can't stop correctly");
+            LOG.warning("Pwd can't stop correctly");
         }
     }
 }

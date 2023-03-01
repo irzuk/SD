@@ -7,8 +7,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Cat implements Command{
+    private static final Logger LOG = Logger.getLogger("Cat");
     @Nullable private PipedInputStream is;
     private PipedOutputStream os;
     @Nullable private final List<@NotNull String> files;
@@ -22,7 +24,8 @@ public class Cat implements Command{
         this.files = files;
     }
 
-    public Cat(String[] files) {
+    @SuppressWarnings("unused")
+    public Cat(String[] files) { // Need for parser
         this.files = Arrays.stream(files).toList();
     }
 
@@ -47,7 +50,7 @@ public class Cat implements Command{
         try {
             os.close();
         } catch (IOException e) {
-            System.out.println("cat: can't close output");
+            LOG.warning("cat: can't close output");
         }
     }
 
@@ -68,7 +71,7 @@ public class Cat implements Command{
                     os.write(String.format("cat: %s: No such file or directory", fileName).getBytes(StandardCharsets.UTF_8));
                 }
             } catch (IOException e) {
-                System.out.printf("cat: I/O exception in file: %s\n", fileName);
+                LOG.warning(String.format("cat: I/O exception in file: %s\n", fileName));
             }
         }
     }
@@ -84,7 +87,7 @@ public class Cat implements Command{
                 res = is.read(buf, 0, BUF_SIZE);
             }
         } catch (IOException e) {
-            System.out.println("cat: I/O exception in input");
+            LOG.warning("cat: I/O exception in input");
         }
     }
 }

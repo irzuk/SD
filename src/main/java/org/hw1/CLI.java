@@ -24,7 +24,9 @@ public class CLI {
     }
 
     private static void printPrompt(PrintStream os) {
-        //os.print("user@machine:/cur/dir$ ");
+        if (!inTestMode) {
+            os.print("user@machine:/cur/dir$ ");
+        }
     }
 
     public static void setInput(InputStream is) {
@@ -40,22 +42,17 @@ public class CLI {
         p.registerCommand("echo", Echo.class);
         p.registerCommand("wc", Wc.class);
         p.registerCommand("pwd", Pwd.class);
-
     }
 
     public static void main(String[] args) throws Exception {
         Logger logger = Logger.getLogger("CLILog");
         FileHandler fh;
         try {
-
             fh = new FileHandler("src/main/resources/CLILog.log");
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
 
@@ -64,7 +61,6 @@ public class CLI {
         registerAllCommands(p);
 
         while (true) {
-
             printPrompt(output);
             // get tokens from InputStream
             List<Token> resp = l.getTokens();
@@ -92,9 +88,6 @@ public class CLI {
                 finalInputStream.transferTo(output);
             }
             logger.info("===== End of Line =====");
-
         }
-
     }
-
 }

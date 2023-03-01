@@ -4,8 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.util.logging.Logger;
 
 public class Exec implements Command {
+    private static final Logger LOG = Logger.getLogger("Exec");
     @NotNull
     private final String @NotNull [] cmdarray;
     @Nullable
@@ -42,7 +44,7 @@ public class Exec implements Command {
                 os.close();
             }
         } catch (IOException e) {
-            System.out.printf("exec: can't run %s\n", String.join(" ", cmdarray));
+            LOG.warning(String.format("exec: can't run %s\n", String.join(" ", cmdarray)));
         }
     }
 

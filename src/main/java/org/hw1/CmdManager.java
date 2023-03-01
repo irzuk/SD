@@ -1,9 +1,7 @@
 package org.hw1;
 
 import java.io.*;
-import java.nio.channels.Pipe;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -33,15 +31,6 @@ public class CmdManager {
 
         }
         return previousInput;
-
-//        PipedOutputStream out = new PipedOutputStream();
-//        PipedInputStream in = new PipedInputStream(out);
-//
-//        Command command = commands.get(0);
-//        command.setOutputStream(out);
-//        Thread executor = new Thread(command);
-//        executor.start();
-//        return in;
     }
 
     static public void shutDown() {

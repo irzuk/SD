@@ -20,7 +20,7 @@ public class EchoTest {
         var t = new Thread(echo);
         t.start();
         var str = readAllSmall(is);
-        assertEquals("Hello echo", str);
+        assertEquals("Hello echo\n", str);
         t.join();
     }
 }

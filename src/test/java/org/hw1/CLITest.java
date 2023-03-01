@@ -80,7 +80,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        assertArrayEquals("Hello world!".getBytes(), out.toByteArray());
+        assertArrayEquals("Hello world!\n".getBytes(), out.toByteArray());
     }
 
     // Fails for now
@@ -112,7 +112,6 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        System.out.println(out.toString(StandardCharsets.UTF_8));
         assertArrayEquals("      1       2      13\n".getBytes(), out.toByteArray());
     }
 
@@ -156,7 +155,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        assertArrayEquals("Hello".getBytes(), out.toByteArray());
+        assertArrayEquals("Hello\n".getBytes(), out.toByteArray());
     }
 
     @Test
@@ -170,7 +169,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        assertArrayEquals("Hello World!".getBytes(), out.toByteArray());
+        assertArrayEquals("Hello World!\n".getBytes(), out.toByteArray());
     }
 
     @Test
@@ -185,7 +184,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        assertArrayEquals("exitex".getBytes(), out.toByteArray());
+        assertArrayEquals("exit\nex\n".getBytes(), out.toByteArray());
     }
 
 
@@ -201,7 +200,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        assertArrayEquals("1 1 3\n".getBytes(), out.toByteArray());
+        assertArrayEquals("2 1 4\n".getBytes(), out.toByteArray());
     }
 
 
