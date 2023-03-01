@@ -1,5 +1,6 @@
 package org.hw1.commands;
 
+import org.hw1.CLILogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,10 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class Wc implements Command {
-    private static final Logger LOG = Logger.getLogger("Cat");
+    private static final CLILogger LOG = new CLILogger("Cat");
     private final List<@NotNull String> files;
     private PipedInputStream is;
     private PipedOutputStream os;

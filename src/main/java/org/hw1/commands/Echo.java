@@ -1,5 +1,6 @@
 package org.hw1.commands;
 
+import org.hw1.CLILogger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -8,10 +9,9 @@ import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class Echo implements Command{
-    private static final Logger LOG = Logger.getLogger("Echo");
+    private static final CLILogger LOG = new CLILogger("Echo");
     @NotNull
     private final List<String> args;
     private PipedOutputStream os;

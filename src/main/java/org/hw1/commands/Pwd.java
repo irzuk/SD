@@ -1,13 +1,14 @@
 package org.hw1.commands;
 
+import org.hw1.CLILogger;
+
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 public class Pwd implements Command {
-    private static final Logger LOG = Logger.getLogger("Exec");
+    private static final CLILogger LOG = new CLILogger("Exec");
     private PipedOutputStream os;
 
     @Override

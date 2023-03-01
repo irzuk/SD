@@ -1,13 +1,13 @@
 package org.hw1.commands;
 
+import org.hw1.CLILogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.logging.Logger;
 
 public class Exec implements Command {
-    private static final Logger LOG = Logger.getLogger("Exec");
+    private static final CLILogger LOG = new CLILogger("Exec");
     @NotNull
     private final String @NotNull [] cmdarray;
     @Nullable
