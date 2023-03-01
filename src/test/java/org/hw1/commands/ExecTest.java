@@ -33,16 +33,6 @@ public class ExecTest {
         assertTrue(scriptFile.toFile().setExecutable(true));
     }
 
-    private static @NotNull InputStream createAndStartExec(@NotNull String @NotNull[] cmdarray) throws IOException {
-        var exec = new Exec(cmdarray);
-        var is = new PipedInputStream();
-        var os = new PipedOutputStream(is);
-        exec.setOutputStream(os);
-        var checker = new Thread(exec);
-        checker.start();
-        return is;
-    }
-
     @Test
     public void testExecLs() throws IOException {
         if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
@@ -74,5 +64,16 @@ public class ExecTest {
         checker.start();
         checker.join();
         assertEquals("Command abc not found\n", errStream.toString());
+    }
+
+    private static @NotNull InputStream createAndStartExec(@NotNull String @NotNull[] cmdarray) throws IOException {
+        var exec = new Exec(cmdarray);
+        var is = new PipedInputStream();
+        var os = new PipedOutputStream(is);
+        exec.setOutputStream(os);
+        exec.setErrorStream(System.err);
+        var checker = new Thread(exec);
+        checker.start();
+        return is;
     }
 }

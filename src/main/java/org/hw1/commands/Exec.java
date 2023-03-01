@@ -17,7 +17,6 @@ public class Exec implements Command {
     @Nullable
     private PipedOutputStream os;
     private PrintStream errS;
-    private final int BUF_SIZE = 1024;
 
     // first param is name of command
     public Exec(String[] cmdarray) {
@@ -47,8 +46,7 @@ public class Exec implements Command {
                 var process = Runtime.getRuntime().exec(cmdarray);
                 var processOut = process.getOutputStream();
                 var processIn = process.getInputStream();
-                writeInProcess(processOut);
-                readFromProcess(processIn);
+                writeReadProcess(processIn, processOut);
             } catch (IOException e) {
                 if (e.getMessage().startsWith("Cannot run program")) {
                     errS.printf("Command %s not found\n", cmdarray[0]);
@@ -64,22 +62,25 @@ public class Exec implements Command {
         }
     }
 
-    private void writeInProcess(@Nullable OutputStream processOut) throws IOException {
-        if (is != null && processOut != null) {
-            var buf = new byte[BUF_SIZE];
+    private void writeReadProcess(@Nullable InputStream processIn, @Nullable OutputStream processOut) throws IOException {
+        int BUF_SIZE = 1024;
+        var buf = new byte[BUF_SIZE];
+        if (processOut != null && is != null) {
             int res = is.read(buf);
-            while (res != -1) {
+            while(res != -1) {
                 processOut.write(buf, 0, res);
+                if (processIn != null && os != null) {
+                    while(processIn.available() > 0) {
+                        int resRead = processIn.read(buf);
+                        os.write(buf, 0, resRead);
+                    }
+                }
                 res = is.read(buf);
             }
         }
-    }
-
-    private void readFromProcess(@Nullable InputStream processIn) throws IOException {
-        if (os != null && processIn != null) {
-            var buf = new byte[BUF_SIZE];
+        if (processIn != null && os != null) {
             int res = processIn.read(buf);
-            while (res != -1) {
+            while(res != -1) {
                 os.write(buf, 0, res);
                 res = processIn.read(buf);
             }
