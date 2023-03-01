@@ -57,7 +57,9 @@ public class Cat implements Command{
     private void catFiles() {
         assert files != null;
         byte[] buf = new byte[BUF_SIZE];
+        int i = 0;
         for (var fileName : files) {
+            i++;
             try {
                 try(var fis = new FileInputStream(fileName)) {
                     int res = fis.read(buf);
@@ -66,9 +68,13 @@ public class Cat implements Command{
                         os.flush();
                         res = fis.read(buf);
                     }
-                    os.write("\n".getBytes(StandardCharsets.UTF_8));
+                    if (i != files.size()) {
+                        os.write("\n".getBytes(StandardCharsets.UTF_8));
+                        os.flush();
+                    }
                 } catch (FileNotFoundException e) {
                     os.write(String.format("cat: %s: No such file or directory", fileName).getBytes(StandardCharsets.UTF_8));
+                    os.flush();
                 }
             } catch (IOException e) {
                 LOG.warning(String.format("cat: I/O exception in file: %s\n", fileName));

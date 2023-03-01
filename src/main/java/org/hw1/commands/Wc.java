@@ -74,7 +74,7 @@ public class Wc implements Command {
                     os.write(String.format("wc: %s: No such file or directory", fileName).getBytes(StandardCharsets.UTF_8));
                     os.flush();
                 } catch (IOException e) {
-                    LOG.warning(String.format("wc: I/O exception in file: %s\n", fileName));
+                    LOG.warning(String.format("wc: I/O exception in file: %s", fileName));
                 }
                 continue;
             }
@@ -87,7 +87,10 @@ public class Wc implements Command {
                     res = fis.read(buf);
                 }
                 lines++;
-                os.write(String.format("%d %d %d %s\n", lines, words, bytes, fileName).getBytes(StandardCharsets.UTF_8));
+                os.write(String.format("%d %d %d %s", lines, words, bytes, fileName).getBytes(StandardCharsets.UTF_8));
+                if (files.size() != 1) {
+                    os.write("\n".getBytes(StandardCharsets.UTF_8));
+                }
                 os.flush();
             } catch (IOException e) {
                 LOG.warning(String.format("wc: I/O exception in file: %s\n", fileName));
@@ -98,7 +101,7 @@ public class Wc implements Command {
         }
         if (files.size() > 1) {
             try {
-                os.write(String.format("%d %d %d total\n", totalLines, totalWords, totalBytes).getBytes(StandardCharsets.UTF_8));
+                os.write(String.format("%d %d %d total", totalLines, totalWords, totalBytes).getBytes(StandardCharsets.UTF_8));
                 os.flush();
             } catch (IOException e) {
                 LOG.warning("wc: can't write in output");
@@ -121,7 +124,7 @@ public class Wc implements Command {
                 res = is.read(buf);
             }
             lines++;
-            os.write(String.format("%d %d %d\n", lines, words, bytes).getBytes(StandardCharsets.UTF_8));
+            os.write(String.format("%6d %6d %6d", lines, words, bytes).getBytes(StandardCharsets.UTF_8));
             os.flush();
         } catch (IOException e) {
             LOG.warning("wc: exception in pipeline");

@@ -47,7 +47,7 @@ public class CatTest {
         cat.setOutputStream(os);
         cat.run();
         var str = readAllSmall(is);
-        assertEquals("It's a simple test\nIt must work\n", str);
+        assertEquals("It's a simple test\nIt must work", str);
     }
 
     @Test
@@ -58,16 +58,15 @@ public class CatTest {
         cat.setOutputStream(os);
         cat.run();
         var str = readAllSmall(is);
-        assertEquals("It's a simple test\nIt must work\nIt's a second simple test\nIt must work too\n", str);
+        assertEquals("It's a simple test\nIt must work\nIt's a second simple test\nIt must work too", str);
     }
 
     @Test
     public void testBigCatFile() {
-        var bufRes = new byte[FILE_BIG_SIZE + 1];
+        var bufRes = new byte[FILE_BIG_SIZE];
         for (int i = 0; i < FILE_BIG_SIZE; ++i) {
             bufRes[i] = (byte) (i % 10);
         }
-        bufRes[FILE_BIG_SIZE] = 10; // '\n'
         try {
             var is = new PipedInputStream();
             var os = new PipedOutputStream(is);
@@ -85,7 +84,7 @@ public class CatTest {
                 off += res;
                 res = is.read(buf);
             }
-            assertEquals(FILE_BIG_SIZE + 1, off);
+            assertEquals(FILE_BIG_SIZE, off);
             worker.join();
         } catch (Exception e) {
             e.printStackTrace();

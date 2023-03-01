@@ -35,7 +35,7 @@ public class WcTest {
         var t = new Thread(wc);
         t.start();
         var str = readAllSmall(is);
-        String checkString = String.format("2 2 19 %s\n", fileSimple);
+        String checkString = String.format("2 2 19 %s", fileSimple);
         assertEquals(checkString, str);
         t.join();
     }
@@ -52,8 +52,7 @@ public class WcTest {
         String checkString = String.format("""
             2 2 19 %s
             2 3 24 %s
-            4 5 43 total
-            """, fileSimple, fileSimpleSecond);
+            4 5 43 total""", fileSimple, fileSimpleSecond);
         assertEquals(checkString, str);
         t.join();
     }
@@ -82,7 +81,7 @@ public class WcTest {
         writer.start();
         worker.start();
         var str = readAllSmall(toRead);
-        assertEquals("2 4 24\n", str);
+        assertEquals("     2      4     24", str);
         writer.join();
         worker.join();
     }

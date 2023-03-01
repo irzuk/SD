@@ -24,3 +24,9 @@ hs_err_pid*
 
 .idea/
 target/
+.gradle/
+build/
+gradle/
+
+gradlew
+gradlew.bat

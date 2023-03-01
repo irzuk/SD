@@ -48,8 +48,6 @@ public class Echo implements Command{
             }
         }
         try {
-            os.write("\n".getBytes(StandardCharsets.UTF_8));
-            os.flush();
             os.close();
         } catch (IOException e) {
             LOG.warning("Echo: can't stop correctly");

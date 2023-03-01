@@ -28,7 +28,6 @@ public class CmdManager {
             command.setOutputStream(out);
             previousInput = in;
             executor.execute(command);
-
         }
         return previousInput;
     }
@@ -37,7 +36,6 @@ public class CmdManager {
         if (executor != null) {
             executor.shutdownNow();
         }
-
     }
 
     static public void startThreadPool() {

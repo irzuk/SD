@@ -74,6 +74,9 @@ public class CLI {
             if (finalInputStream != null) { // in case of empty pipeline
                 finalInputStream.transferTo(output);
             }
+            if (!inTestMode) {
+                output.println();
+            }
             LOG.info("===== End of Line =====");
         }
     }
