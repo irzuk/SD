@@ -1,5 +1,6 @@
 package org.hw1;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,207 +26,117 @@ public class CLITest {
     }
 
     @Test
-    public void testExit() throws Throwable {
-
-        String commandWithArgs = "exit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testExit() throws Exception {
+        var out = runCommand("exit\n");
         assertEquals("", out.toString());
     }
 
     @Test
-    public void testCat() throws Throwable {
-        String commandWithArgs = "cat " + fileSimple + "\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testCat() throws Exception {
+        var out = runCommand("cat " + fileSimple + "\nexit\n");
         assertEquals("It's a simple test\nIt must work", out.toString());
     }
 
     @Test
-    public void testPwd() throws Throwable {
-        String commandWithArgs = "pwd\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testPwd() throws Exception {
+        var out = runCommand("pwd\nexit\n");
         assertEquals(System.getProperty("user.dir"), out.toString());
     }
 
     @Test
-    public void testEcho() throws Throwable {
-        String commandWithArgs = "echo \"Hello world!\"\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testEcho() throws Exception {
+        var out = runCommand("echo \"Hello world!\"\nexit\n");
         assertEquals("Hello world!", out.toString());
     }
 
     @Test
-    public void testWc() throws Throwable {
-        String commandWithArgs = "wc " + fileSimple + "\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testWc() throws Exception {
+        var out = runCommand("wc " + fileSimple + "\nexit\n");
         assertEquals("2 7 31 " + fileSimple, out.toString());
     }
 
     @Test
-    public void testExec() throws Throwable {
+    public void testExec() throws Exception {
         // script test
-        String commandWithArgs = scriptFile + "\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+        var out = runCommand(scriptFile + "\nexit\n");
         assertEquals("      1       2      13\n", out.toString());
     }
 
     @Test
-    public void testVar() throws Throwable {
-        String commandWithArgs = "FILE=" + fileSimple + "\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testVar() throws Exception {
+        var out = runCommand("FILE=" + fileSimple + "\nexit\n");
         assertEquals(0, out.size());
     }
 
 
     @Test
-    public void testVarWithCat() throws Throwable {
-        String commandWithArgs = "FILE=" + fileSimple + "\ncat $FILE\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testVarWithCat() throws Exception {
+        var out = runCommand("FILE=" + fileSimple + "\ncat $FILE\nexit\n");
         assertEquals("It's a simple test\nIt must work", out.toString());
     }
 
     @Test
-    public void testVarWithEcho() throws Throwable {
-        String commandWithArgs = "VAR=Hello\necho $VAR\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testVarWithEcho() throws Exception {
+        var out = runCommand("VAR=Hello\necho $VAR\nexit\n");
         assertEquals("Hello", out.toString());
     }
 
     @Test
-    public void testVarWithEchoDoubleQuotes() throws Throwable {
-        String commandWithArgs = "VAR=\"Hello World!\"\necho $VAR\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+    public void testVarWithEchoDoubleQuotes() throws Exception {
+        var out = runCommand("VAR=\"Hello World!\"\necho $VAR\nexit\n");
         assertEquals("Hello World!", out.toString());
     }
 
     @Test
-    public void testTwoVarsWithEcho() throws Throwable {
+    public void testTwoVarsWithEcho() throws Exception {
         //  x=ex y=it $x$y
-        String commandWithArgs = "x=ex\ny=it\necho $x$y\necho $x\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+        var out = runCommand("x=ex\ny=it\necho $x$y\necho $x\nexit\n");
         assertEquals("exitex", out.toString());
     }
 
 
     @Test
-    public void testEchoWithWc() throws Throwable {
+    public void testEchoWithWc() throws Exception {
         // echo 123 | wc 1 1 3
-        String commandWithArgs = "echo \"123\" | wc\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+        var out = runCommand("echo \"123\" | wc\nexit\n");
         assertEquals("     1      1      3", out.toString());
     }
 
 
     @Test
-    public void testCatWithWc() throws Throwable {
+    public void testCatWithWc() throws Exception {
         // cat CatTestSimple.txt | wc 2 7 31
-        String commandWithArgs = "cat " + fileSimple + " | wc\nexit\n";
-        var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
-        var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
-
-        CLI.setInput(input);
-        CLI.setOutput(output);
-        CLI.main(null);
-
+        var out = runCommand("cat " + fileSimple + " | wc\nexit\n");
         assertEquals("     2      7     31", out.toString());
     }
 
 
     @Test
-    public void testCatWithCat() throws Throwable {
-        String commandWithArgs = "cat " + fileSimpleSecond + " | cat " + fileSimple + "\nexit\n";
+    public void testCatWithCat() throws Exception {
+        var out = runCommand("cat " + fileSimpleSecond + " | cat " + fileSimple + "\nexit\n");
+        assertEquals("It's a simple test\nIt must work", out.toString());
+    }
+
+    @Test
+    public void testIncorrectCommand() throws Exception {
+        var err = runCommand("abc\nexit\n", true);
+        assertEquals("Command abc not found\n", err.toString());
+    }
+
+    private static @NotNull ByteArrayOutputStream runCommand(@NotNull String commandWithArgs) throws Exception {
+        return runCommand(commandWithArgs, false);
+    }
+
+    private static @NotNull ByteArrayOutputStream runCommand(@NotNull String commandWithArgs, boolean returnErr) throws Exception {
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
-        var output = new PrintStream(out);
+        var err = new ByteArrayOutputStream();
 
         CLI.setInput(input);
-        CLI.setOutput(output);
+        CLI.setOutput(new PrintStream(out));
+        CLI.setErrStream(new PrintStream(err));
         CLI.main(null);
 
-        assertEquals("It's a simple test\nIt must work", out.toString());
+        return returnErr ? err : out;
     }
 }

@@ -64,4 +64,15 @@ public class ExecTest {
             assertEquals(checkStr, str);
         }
     }
+
+    @Test
+    public void testIncorrectCommand() throws InterruptedException {
+        var errStream = new ByteArrayOutputStream();
+        var exec = new Exec(new String[]{"abc"});
+        exec.setErrorStream(new PrintStream(errStream));
+        var checker = new Thread(exec);
+        checker.start();
+        checker.join();
+        assertEquals("Command abc not found\n", errStream.toString());
+    }
 }
