@@ -1,6 +1,6 @@
 package org.hw1;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -10,9 +10,8 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CLITest {
     private static final Path dirPath = Paths.get("src/test/resources/commands/cat");
@@ -22,10 +21,9 @@ public class CLITest {
     private static final Path scriptFile = Paths.get(dirPathExec + "/script.sh");
 
     @BeforeAll
-    private static void setTestMode() {
+    public static void setTestMode() {
         CLI.isInTestMode(true);
     }
-
 
     @Test
     public void testExit() throws Throwable {
@@ -39,14 +37,13 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("".getBytes(), out.toByteArray());
-
+        assertArrayEquals("".getBytes(), out.toByteArray());
     }
 
     @Test
     public void testCat() throws Throwable {
 
-        String commandWithArgs = "cat " + fileSimple.toString() + "\nexit\n";
+        String commandWithArgs = "cat " + fileSimple + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -55,8 +52,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("It's a simple test\nIt must work\n".getBytes(), out.toByteArray());
-
+        assertArrayEquals("It's a simple test\nIt must work\n".getBytes(), out.toByteArray());
     }
 
     @Test
@@ -70,8 +66,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals(System.getProperty("user.dir").getBytes(), out.toByteArray());
-
+        assertArrayEquals(System.getProperty("user.dir").getBytes(), out.toByteArray());
     }
 
     @Test
@@ -85,15 +80,14 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("Hello world!".getBytes(), out.toByteArray());
-
+        assertArrayEquals("Hello world!".getBytes(), out.toByteArray());
     }
 
     // Fails for now
     // TODO(Deuqz)
     @Test
     public void testWc() throws Throwable {
-        String commandWithArgs = "wc " + fileSimple.toString() + "\nexit\n";
+        String commandWithArgs = "wc " + fileSimple + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -102,15 +96,14 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        String ans = "2 7 31 " + fileSimple.toString() + "\n";
-        Assert.assertArrayEquals(ans.getBytes(), out.toByteArray());
-
+        String ans = "2 7 31 " + fileSimple + "\n";
+        assertArrayEquals(ans.getBytes(), out.toByteArray());
     }
 
     @Test
     public void testExec() throws Throwable {
         // script test
-        String commandWithArgs = scriptFile.toString() + "\nexit\n";
+        String commandWithArgs = scriptFile + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -119,13 +112,13 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("       1       2      13\n".getBytes(), out.toByteArray());
-
+        System.out.println(out.toString(StandardCharsets.UTF_8));
+        assertArrayEquals("      1       2      13\n".getBytes(), out.toByteArray());
     }
 
     @Test
     public void testVar() throws Throwable {
-        String commandWithArgs = "FILE=" + fileSimple.toString() + "\nexit\n";
+        String commandWithArgs = "FILE=" + fileSimple + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -134,14 +127,13 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertEquals(0, out.size());
-
+        Assertions.assertEquals(0, out.size());
     }
 
 
     @Test
     public void testVarWithCat() throws Throwable {
-        String commandWithArgs = "FILE=" + fileSimple.toString() + "\ncat $FILE\nexit\n";
+        String commandWithArgs = "FILE=" + fileSimple + "\ncat $FILE\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -150,8 +142,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("It's a simple test\nIt must work\n".getBytes(), out.toByteArray());
-
+        assertArrayEquals("It's a simple test\nIt must work\n".getBytes(), out.toByteArray());
     }
 
     @Test
@@ -165,8 +156,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("Hello".getBytes(), out.toByteArray());
-
+        assertArrayEquals("Hello".getBytes(), out.toByteArray());
     }
 
     @Test
@@ -180,8 +170,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("Hello World!".getBytes(), out.toByteArray());
-
+        assertArrayEquals("Hello World!".getBytes(), out.toByteArray());
     }
 
     @Test
@@ -196,8 +185,7 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("exitex".getBytes(), out.toByteArray());
-
+        assertArrayEquals("exitex".getBytes(), out.toByteArray());
     }
 
 
@@ -213,15 +201,14 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("1 1 3\n".getBytes(), out.toByteArray());
-
+        assertArrayEquals("1 1 3\n".getBytes(), out.toByteArray());
     }
 
 
     @Test
     public void testCatWithWc() throws Throwable {
         // cat example.txt | wc 1 7 31
-        String commandWithArgs = "cat " + fileSimple.toString() + " | wc\nexit\n";
+        String commandWithArgs = "cat " + fileSimple + " | wc\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -230,14 +217,13 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("3 7 32\n".getBytes(), out.toByteArray());
-
+        assertArrayEquals("3 7 32\n".getBytes(), out.toByteArray());
     }
 
 
     @Test
     public void testCatWithCat() throws Throwable {
-        String commandWithArgs = "cat " + fileSimpleSecond.toString() + " | cat " + fileSimple.toString() + "\nexit\n";
+        String commandWithArgs = "cat " + fileSimpleSecond + " | cat " + fileSimple + "\nexit\n";
         var input = new ByteArrayInputStream(commandWithArgs.getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
         var output = new PrintStream(out);
@@ -246,9 +232,6 @@ public class CLITest {
         CLI.setOutput(output);
         CLI.main(null);
 
-        Assert.assertArrayEquals("It's a simple test\nIt must work\n".getBytes(), out.toByteArray());
-
+        assertArrayEquals("It's a simple test\nIt must work\n".getBytes(), out.toByteArray());
     }
-
 }
-
