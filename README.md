@@ -8,3 +8,9 @@
 
 ### BPMN диаграмма
 ![alt text](screenshots/BPMN.png)
+
+### Диаграмма компонент
+![alt text](screenshots/component.png)
+
+### Диаграмма классов
+![alt text](screenshots/class.png)
