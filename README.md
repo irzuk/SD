@@ -12,5 +12,5 @@
 ### Диаграмма компонент
 ![alt text](screenshots/component.png)
 
-### Диаграмма классов
-![alt text](screenshots/class.png)
+### Диаграмма последовательностей
+![alt text](screenshots/seq.png)
