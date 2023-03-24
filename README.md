@@ -3,7 +3,7 @@
 ### Диаграмма классов
 ![alt text](screenshots/Classes.png)
 
-### Диаграмма компонент
+### Диаграмма компонентов
 ![alt text](screenshots/Components.png)
 
 ### Диаграмма развертываний
