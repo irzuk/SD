@@ -1,0 +1,11 @@
+/src/test/resources/
+/src/main/resources/
+
+/build
+/.idea
+/gradle
+/.gradle
+gradlew
+gradlew.bat
+
+
