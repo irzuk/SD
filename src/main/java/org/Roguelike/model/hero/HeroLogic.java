@@ -1,17 +1,19 @@
 package org.Roguelike.model.hero;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
-import org.Roguelike.collections.Point;
+import org.Roguelike.collections.geometry.Point;
 import org.Roguelike.collections.items.Item;
+import org.Roguelike.collections.map.elements.MapElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public interface HeroLogic {
-    void addItem(Item item);
-    boolean setItem(Item item);
+    void processItem(@NotNull Item item);
+    boolean setItem(@NotNull Item item);
     boolean decreaseCharacteristics();
-    List<Item> getAvailableItems();
-    Point getPosition();
-    CharacteristicsInfo getCharacteristics();
-    void setPosition(Point point);
+    @NotNull List<@NotNull Item> getAvailableItems();
+    @NotNull MapElement getLocation();
+    @NotNull CharacteristicsInfo getCharacteristics();
+    void setLocation(@NotNull MapElement location);
 }

@@ -1,5 +1,7 @@
 package org.Roguelike.collections.items;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum Essence implements Item {
     POTATO{
         @Override
@@ -13,7 +15,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Potato";
         }
 
@@ -34,7 +36,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Cool Cola";
         }
 
@@ -55,7 +57,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Chocolate \"Russia is a generous soul\"";
         }
 
@@ -76,7 +78,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Cheeseburger from \"Tasty and Point\"";
         }
 
@@ -97,7 +99,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Funny joke";
         }
 
@@ -118,7 +120,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Meme";
         }
 
@@ -139,7 +141,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Cigarette \"Winston Red\"";
         }
 
@@ -160,7 +162,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Adrenaline bubble";
         }
 
@@ -181,7 +183,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Coffee \"Nescafe 3 in 1\"";
         }
 
@@ -202,7 +204,7 @@ public enum Essence implements Item {
         }
 
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "\"Red Bull\"";
         }
 
@@ -213,7 +215,7 @@ public enum Essence implements Item {
     };
 
     @Override
-    public ItemType getType() {
+    public @NotNull ItemType getType() {
         return ItemType.ESSENCE;
     }
 }

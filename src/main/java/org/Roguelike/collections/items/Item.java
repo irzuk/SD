@@ -1,9 +1,11 @@
 package org.Roguelike.collections.items;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface Item {
-    ItemType getType();
+    @NotNull ItemType getType();
     int getCheerfullness();
     int getSatiety();
-    String getDescription();
+    @NotNull String getDescription();
     double getProbability();
 }

@@ -1,5 +1,7 @@
 package org.Roguelike.collections.items;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum Thing implements Item {
     CATEGORY_B_JOKE {
         @Override
@@ -11,7 +13,7 @@ public enum Thing implements Item {
             return 5;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Category B joke";
         }
     },
@@ -26,7 +28,7 @@ public enum Thing implements Item {
             return 10;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Finger pin";
         }
     },
@@ -41,7 +43,7 @@ public enum Thing implements Item {
             return 15;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Dirty socks";
         }
     },
@@ -56,7 +58,7 @@ public enum Thing implements Item {
             return 20;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Electric collar";
         }
     },
@@ -71,7 +73,7 @@ public enum Thing implements Item {
             return 0;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Unflattering photo";
         }
     },
@@ -86,7 +88,7 @@ public enum Thing implements Item {
             return 0;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Toothpick";
         }
     },
@@ -101,7 +103,7 @@ public enum Thing implements Item {
             return 0;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Waistband";
         }
     },
@@ -116,7 +118,7 @@ public enum Thing implements Item {
             return 0;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Gag in mouth";
         }
     },
@@ -131,7 +133,7 @@ public enum Thing implements Item {
             return 10;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Demon contract";
         }
     },
@@ -146,7 +148,7 @@ public enum Thing implements Item {
             return 15;
         }
         @Override
-        public String getDescription() {
+        public @NotNull String getDescription() {
             return "Reshebnik Demidovicha ";
         }
     };
@@ -156,7 +158,7 @@ public enum Thing implements Item {
         return 0.1;
     }
     @Override
-    public ItemType getType() {
+    public @NotNull ItemType getType() {
         return ItemType.THING;
     }
 }
