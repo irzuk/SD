@@ -9,5 +9,5 @@ public interface Inventory {
     boolean add(@NotNull Item item);
     boolean contains(@NotNull Item item);
     boolean remove(@NotNull Item item);
-    @NotNull List<@NotNull Item> getAvailableItems();
+    @NotNull List<? extends Item> getAvailableItems();
 }

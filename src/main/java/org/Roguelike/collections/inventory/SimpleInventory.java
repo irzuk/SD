@@ -30,7 +30,7 @@ public class SimpleInventory implements Inventory {
     }
 
     @Override
-    public @NotNull List<@NotNull Item> getAvailableItems() {
+    public @NotNull List<? extends Item> getAvailableItems() {
         return new ArrayList<>(availableThings);
     }
 }

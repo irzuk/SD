@@ -1,14 +1,18 @@
 package org.Roguelike.model.map;
 
 import org.Roguelike.collections.geometry.Vector;
+import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.MapLogicResult;
 import org.Roguelike.collections.map.elements.DoorElement;
 import org.Roguelike.collections.map.elements.HeroElement;
+import org.Roguelike.generators.items.DistributionItemGenerator;
+import org.Roguelike.generators.items.ItemGenerator;
 import org.Roguelike.generators.map.MapGenerator;
 import org.Roguelike.generators.map.RoomGenerator;
 import org.Roguelike.generators.map.SideWithDoor;
 import org.jetbrains.annotations.NotNull;
+
 
 import static org.Roguelike.generators.map.SideWithDoor.*;
 import static org.Roguelike.collections.map.MapElementsParameters.CELL_BORDER;
@@ -17,11 +21,13 @@ import static org.Roguelike.collections.map.MapElementsParameters.HERO_HEIGHT;
 
 public class RoomLogic implements MapLogic {
     private @NotNull Map map;
-    private final @NotNull MapGenerator generator;
+    private final @NotNull MapGenerator mapGenerator;
+    private final @NotNull ItemGenerator itemGenerator;
 
     public RoomLogic() {
-        generator = new RoomGenerator();
-        map = generator.generateMap(RIGHT);
+        mapGenerator = new RoomGenerator();
+        map = mapGenerator.generateMap(RIGHT);
+        itemGenerator = new DistributionItemGenerator();
     }
 
     @Override
@@ -29,26 +35,27 @@ public class RoomLogic implements MapLogic {
         for (var door : map.doors()) {
             if (vector.intersectsElement(location, door)) {
                 var sideOfDoor = getSideByVector(vector);
-                map = generator.generateMap(sideOfDoor);
-                var newHeroLocation = getNewHeroLocationBySide(location, sideOfDoor);
-                return new MapLogicResult(newHeroLocation, 0);
+                map = mapGenerator.generateMap(sideOfDoor);
+                var newHeroLocation = getNewHeroLocationBySide(sideOfDoor);
+                return new MapLogicResult(newHeroLocation, null);
             }
         }
         for (var line : map.roomLines()) {
             if (vector.intersectsLine(location, line)) {
-                return new MapLogicResult(location, 0);
+                return new MapLogicResult(location, null);
             }
         }
-        int openChests = 0;
+        Item item = null;
         for (var it = map.chests().iterator(); it.hasNext();) {
             var chest = it.next();
             if (vector.intersectsElement(location, chest)) {
                 it.remove();
-                openChests++;
+                item = itemGenerator.generateItem();
+                break;
             }
         }
         var newHeroLocation = vector.moveHero(location);
-        return new MapLogicResult(newHeroLocation, openChests);
+        return new MapLogicResult(newHeroLocation, item);
     }
 
     @Override
@@ -64,7 +71,7 @@ public class RoomLogic implements MapLogic {
         }
     }
 
-    private @NotNull HeroElement getNewHeroLocationBySide(@NotNull HeroElement location, @NotNull SideWithDoor sideWithDoor) {
+    private @NotNull HeroElement getNewHeroLocationBySide(@NotNull SideWithDoor sideWithDoor) {
         assert map.doors().size() > 0;
         DoorElement targetDoor = null;
         for (var door : map.doors()) {

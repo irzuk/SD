@@ -1,29 +1,34 @@
 package org.Roguelike.collections;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
-import org.Roguelike.collections.inventory.Inventory;
 import org.Roguelike.collections.items.Item;
+import org.Roguelike.collections.items.Thing;
 import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GameFrame {
     protected final @NotNull CharacteristicsInfo info;
     protected final @NotNull Map map;
     protected final @NotNull MapElement heroLocation;
-    protected final @NotNull Inventory inventory;
-    protected final @NotNull Item receivedItem;
+    protected final @NotNull List<Thing> items;
+    protected final @Nullable Item receivedItem;
+    protected final boolean stop;
 
     private GameFrame(@NotNull CharacteristicsInfo info,
                       @NotNull Map map,
                       @NotNull MapElement heroLocation,
-                      @NotNull Inventory inventory,
-                      @NotNull Item receivedItem) {
+                      @NotNull List<Thing> items,
+                      @Nullable Item receivedItem, boolean stop) {
         this.info = info;
         this.map = map;
         this.heroLocation = heroLocation;
-        this.inventory = inventory;
+        this.items = items;
         this.receivedItem = receivedItem;
+        this.stop = stop;
     }
 
     public @NotNull CharacteristicsInfo getInfo() {
@@ -38,21 +43,25 @@ public class GameFrame {
         return heroLocation;
     }
 
-    public @NotNull Inventory getInventory() {
-        return inventory;
+    public @NotNull List<Thing> getItems() {
+        return items;
     }
 
-    public @NotNull Item getReceivedItem() {
+    public @Nullable Item getReceivedItem() {
         return receivedItem;
+    }
+
+    public boolean isStop() {
+        return stop;
     }
 
     public static class GameFrameBuilder {
         protected CharacteristicsInfo info;
         protected Map map;
         protected MapElement heroLocation;
-        protected Inventory inventory;
+        protected List<@NotNull Thing> items;
         protected Item receivedItem;
-        private GameFrameBuilder() {}
+        protected boolean stop;
         public GameFrameBuilder setCharacteristicsInfo(@NotNull CharacteristicsInfo info) {
             this.info = info;
             return this;
@@ -65,17 +74,22 @@ public class GameFrame {
             this.heroLocation = heroLocation;
             return this;
         }
-        public GameFrameBuilder setMap(@NotNull Inventory inventory) {
-            this.inventory = inventory;
+        public GameFrameBuilder setThings(@NotNull List<Thing> items) {
+            this.items = items;
             return this;
         }
-        public GameFrameBuilder setReceivedItem(@NotNull Item receivedItem) {
+        public GameFrameBuilder setReceivedItem(@Nullable Item receivedItem) {
             this.receivedItem = receivedItem;
             return this;
         }
 
+        public GameFrameBuilder setStop(boolean stop) {
+            this.stop = stop;
+            return this;
+        }
+
         public GameFrame build() {
-            return new GameFrame(info, map, heroLocation, inventory, receivedItem);
+            return new GameFrame(info, map, heroLocation, items, receivedItem, stop);
         }
     }
 }

@@ -8,7 +8,6 @@ import org.Roguelike.collections.inventory.SimpleInventory;
 import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.items.Thing;
 import org.Roguelike.collections.map.elements.HeroElement;
-import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +22,7 @@ import static org.Roguelike.collections.map.MapElementsParameters.HERO_WIDTH;
 public class SimpleHeroLogic implements HeroLogic {
     private final @NotNull CharacteristicsInfo characteristics;
     private final @NotNull Inventory inventory;
-    private @NotNull MapElement location;
+    private @NotNull HeroElement location;
     private @Nullable Thing currentThing;
     public SimpleHeroLogic() {
         var cheerfullness = new Characteristic(30, 30);
@@ -36,7 +35,10 @@ public class SimpleHeroLogic implements HeroLogic {
 
 
     @Override
-    public void processItem(@NotNull Item item) {
+    public void processItem(@Nullable Item item) {
+        if (item == null) {
+            return;
+        }
         if (item.getType() == THING) {
             inventory.add(item);
         } else {
@@ -54,6 +56,9 @@ public class SimpleHeroLogic implements HeroLogic {
     @Override
     public boolean setItem(@NotNull Item item) {
         assert item.getType() == THING;
+        if (!inventory.contains(item)) {
+            return false;
+        }
         if (currentThing != null) {
             if (!inventory.remove(item) || !inventory.add(currentThing)) {
                 return false;
@@ -89,7 +94,7 @@ public class SimpleHeroLogic implements HeroLogic {
     }
 
     @Override
-    public @NotNull List<@NotNull Item> getAvailableItems() {
+    public @NotNull List<? extends Item> getAvailableItems() {
         return inventory.getAvailableItems();
     }
 
@@ -99,12 +104,12 @@ public class SimpleHeroLogic implements HeroLogic {
     }
 
     @Override
-    public @NotNull MapElement getLocation() {
+    public @NotNull HeroElement getLocation() {
         return location;
     }
 
     @Override
-    public void setLocation(@NotNull MapElement location) {
+    public void setLocation(@NotNull HeroElement location) {
         this.location = location;
     }
 }

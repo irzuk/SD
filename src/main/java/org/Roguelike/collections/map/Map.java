@@ -11,7 +11,4 @@ import java.util.List;
 public record Map(@NotNull List<Line> roomLines,
                   @NotNull LinkedList<ChestElement> chests,
                   @NotNull List<DoorElement> doors) {
-    public boolean removeChest(@NotNull ChestElement chestElement) {
-        return chests.remove(chestElement);
-    }
 }
