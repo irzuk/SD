@@ -6,6 +6,7 @@ import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.MapLogicResult;
 import org.Roguelike.collections.map.elements.DoorElement;
 import org.Roguelike.collections.map.elements.HeroElement;
+import org.Roguelike.collections.map.elements.MapElement;
 import org.Roguelike.generators.items.DistributionItemGenerator;
 import org.Roguelike.generators.items.ItemGenerator;
 import org.Roguelike.generators.map.MapGenerator;
@@ -31,7 +32,7 @@ public class RoomLogic implements MapLogic {
     }
 
     @Override
-    public @NotNull MapLogicResult processHeroLocation(@NotNull HeroElement location, @NotNull Vector vector) {
+    public @NotNull MapLogicResult processHeroLocation(@NotNull MapElement location, @NotNull Vector vector) {
         for (var door : map.doors()) {
             if (vector.intersectsElement(location, door)) {
                 var sideOfDoor = getSideByVector(vector);
@@ -71,9 +72,9 @@ public class RoomLogic implements MapLogic {
         }
     }
 
-    private @NotNull HeroElement getNewHeroLocationBySide(@NotNull SideWithDoor sideWithDoor) {
+    private @NotNull MapElement getNewHeroLocationBySide(@NotNull SideWithDoor sideWithDoor) {
         assert map.doors().size() > 0;
-        DoorElement targetDoor = null;
+        MapElement targetDoor = null;
         for (var door : map.doors()) {
             if (targetDoor == null) {
                 targetDoor = door;

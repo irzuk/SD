@@ -7,7 +7,7 @@ import static org.Roguelike.collections.map.MapElementsParameters.HERO_HEIGHT;
 import static org.Roguelike.collections.map.MapElementsParameters.HERO_WIDTH;
 
 public class HeroElement extends MapElement {
-    public static HeroElement heroFromPoint(@NotNull Point point) {
-        return (HeroElement) squareFromPoint(point, HERO_WIDTH, HERO_HEIGHT);
+    public static MapElement heroFromPoint(@NotNull Point point) {
+        return  squareFromPoint(point, HERO_WIDTH, HERO_HEIGHT);
     }
 }

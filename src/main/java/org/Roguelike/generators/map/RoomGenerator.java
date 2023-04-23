@@ -6,6 +6,7 @@ import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.ChestElement;
 import org.Roguelike.collections.map.elements.DoorElement;
+import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public class RoomGenerator implements MapGenerator {
 
         // Chests
 
-        int prob_perc = 20;
-        LinkedList<ChestElement> chests = new LinkedList<>();
+        int prob_perc = 5;
+        LinkedList<MapElement> chests = new LinkedList<>();
         for (int row = MapElementsParameters.CHEST_HEIGHT;
              row + MapElementsParameters.CHEST_HEIGHT < MapElementsParameters.MAP_HEIGHT;
              row += MapElementsParameters.CHEST_HEIGHT) {
@@ -51,7 +52,7 @@ public class RoomGenerator implements MapGenerator {
         }
 
         // Door
-        DoorElement door;
+        MapElement door;
         switch (sideWithDoor) {
 
             case LEFT -> {
@@ -77,6 +78,6 @@ public class RoomGenerator implements MapGenerator {
             default -> throw new IllegalStateException("Unexpected value: " + sideWithDoor);
         }
 
-        return new Map(roomLines, chests, new ArrayList<>(List.of(door)));
+        return new Map(roomLines, chests, new ArrayList<MapElement>(List.of(door)));
     }
 }

@@ -62,7 +62,7 @@ public class Vector {
         return String.format("(%d, %d)", x, y);
     }
 
-    public @NotNull HeroElement moveHero(@NotNull HeroElement location) {
+    public @NotNull MapElement moveHero(@NotNull MapElement location) {
         return HeroElement.heroFromPoint(Point.byXY(location.leftBot(), x, y));
     }
 

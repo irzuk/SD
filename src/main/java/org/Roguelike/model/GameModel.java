@@ -1,6 +1,7 @@
 package org.Roguelike.model;
 
 import org.Roguelike.UI.Drawer;
+import org.Roguelike.UI.Listener;
 import org.Roguelike.collections.GameFrame;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.items.Item;
@@ -22,6 +23,7 @@ import static org.Roguelike.collections.map.MapElementsParameters.CELL_BORDER;
 
 public class GameModel implements Runnable {
     private final @NotNull Drawer drawer = new Drawer();
+    private final @NotNull Listener listener = new Listener(this);
     private final @NotNull MapLogic mapLogic = new RoomLogic();
     private final @NotNull HeroLogic heroLogic = new SimpleHeroLogic();
     private final @NotNull AtomicBoolean needStop = new AtomicBoolean(false);
@@ -29,11 +31,17 @@ public class GameModel implements Runnable {
     private final @NotNull LinkedList<@NotNull KeyEvent> queueKeyEvents = new LinkedList<>();
     private final Date date = new Date();
 
+    public GameModel() {
+        drawer.addKeyListener(listener);
+    }
+
     @Override
     public void run() {
+        System.err.println("Started");
         long lastDecreasing = date.getTime();
         long lastDrawing = date.getTime();
         while (!needStop.get()) {
+            System.err.println("New iteration");
             Item recievedItem = null;
             lock.lock();
             var keyEvent = queueKeyEvents.poll();
@@ -47,8 +55,10 @@ public class GameModel implements Runnable {
                 stop = !heroLogic.decreaseCharacteristics();
                 lastDecreasing = currentTime;
             }
-            while (date.getTime() - lastDrawing < 30) { // TODO: WTF, Why we got warning?
-            }
+            System.err.println("Loop");
+//            while (date.getTime() - lastDrawing < 30) { // TODO: WTF, Why we got warning?
+//            }
+            System.err.println("Form game frame");
             var gameFrame = new GameFrame.GameFrameBuilder()
                 .setMap(mapLogic.getMap())
                 .setThings(heroLogic.getAvailableItems().stream().map(item -> (Thing) item).toList())

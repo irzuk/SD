@@ -8,6 +8,7 @@ import org.Roguelike.collections.inventory.SimpleInventory;
 import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.items.Thing;
 import org.Roguelike.collections.map.elements.HeroElement;
+import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +23,7 @@ import static org.Roguelike.collections.map.MapElementsParameters.HERO_WIDTH;
 public class SimpleHeroLogic implements HeroLogic {
     private final @NotNull CharacteristicsInfo characteristics;
     private final @NotNull Inventory inventory;
-    private @NotNull HeroElement location;
+    private @NotNull MapElement location;
     private @Nullable Thing currentThing;
     public SimpleHeroLogic() {
         var cheerfullness = new Characteristic(30, 30);
@@ -104,12 +105,12 @@ public class SimpleHeroLogic implements HeroLogic {
     }
 
     @Override
-    public @NotNull HeroElement getLocation() {
+    public @NotNull MapElement getLocation() {
         return location;
     }
 
     @Override
-    public void setLocation(@NotNull HeroElement location) {
+    public void setLocation(@NotNull MapElement location) {
         this.location = location;
     }
 }

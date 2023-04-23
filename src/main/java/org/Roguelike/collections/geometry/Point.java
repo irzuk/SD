@@ -3,6 +3,7 @@ package org.Roguelike.collections.geometry;
 import org.jetbrains.annotations.NotNull;
 
 public record Point(int x, int y) {
+   // private java.awt.Point = new java.awt.Point();
     public static @NotNull Point byX(@NotNull Point p, int val) {
         return new Point(p.x + val, p.y);
     }

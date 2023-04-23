@@ -3,6 +3,7 @@ package org.Roguelike.model.hero;
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.map.elements.HeroElement;
+import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +14,7 @@ public interface HeroLogic {
     boolean setItem(@NotNull Item item);
     boolean decreaseCharacteristics();
     @NotNull List<? extends Item> getAvailableItems();
-    @NotNull HeroElement getLocation();
+    @NotNull MapElement getLocation();
     @NotNull CharacteristicsInfo getCharacteristics();
-    void setLocation(@NotNull HeroElement location);
+    void setLocation(@NotNull MapElement location);
 }
