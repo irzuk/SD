@@ -3,18 +3,20 @@ package org.Roguelike.UI;
 import org.Roguelike.collections.GameFrame;
 import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.MapElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
 public class Drawer extends Frame {
 
-    Canvas map = new Map();
-    Canvas timer = new Canvas();
-    Canvas characteristics = new Characters();
-    Canvas state = new Canvas();
+    @NotNull Canvas map = new Map();
+    @NotNull Canvas timer = new Canvas();
+    @NotNull Canvas characteristics = new Characters();
+    @NotNull Canvas state = new Canvas();
 
     GameFrame oldGameFrame;
-    GameFrame gameFrame;
+    @Nullable GameFrame gameFrame;
 
     private static int BORDER = 5;
     private static int STRING_H = 20;
@@ -45,10 +47,10 @@ public class Drawer extends Frame {
     }
 
     public void drawFrame(GameFrame gameFrame) {
-        System.err.println("Started drawing");
 
         if (gameFrame.isStop()) {
             Dialog d = new Dialog(this, "Game over");
+            System.exit(1); // TODO: Why we don't reach this point?
         }
         this.gameFrame = gameFrame;
 
@@ -57,13 +59,13 @@ public class Drawer extends Frame {
 
         map.repaint();
         characteristics.repaint();
-
-        System.err.println("Finish map");
-
     }
 
-    class Map extends Canvas {
+    private class Map extends Canvas {
         public void update(Graphics g) {
+            if (gameFrame == null) {
+                return;
+            }
             MapElement h = gameFrame.getHeroLocation();
             g.clearRect(h.leftTop().x() - MapElementsParameters.HERO_HEIGHT * 2, h.leftTop().y() - MapElementsParameters.HERO_WIDTH * 2, MapElementsParameters.HERO_HEIGHT * 4, MapElementsParameters.HERO_WIDTH * 4);
             paint(g);
@@ -71,9 +73,11 @@ public class Drawer extends Frame {
 
         @Override
         public void paint(Graphics g) {
+            if (gameFrame == null) {
+                return;
+            }
             g.setColor(Color.RED);
             g.drawPolygon(gameFrame.getHeroLocation());
-            System.err.println("Finish hero");
 
             g.setColor(Color.BLACK);
             for (var x : gameFrame.getMap().chests()) {
@@ -82,9 +86,7 @@ public class Drawer extends Frame {
         }
     }
 
-    ;
-
-    class Characters extends Canvas {
+    private class Characters extends Canvas {
         private int currX = BORDER;
         private int currY = BORDER;
 
@@ -95,6 +97,9 @@ public class Drawer extends Frame {
 
         @Override
         public void paint(Graphics g) {
+            if (gameFrame == null) {
+                return;
+            }
             currY = BORDER * 2;
             g.setColor(Color.black);
             addString(g, "Characteristics");
@@ -112,9 +117,6 @@ public class Drawer extends Frame {
                 addString(g, "Received " + gameFrame.getReceivedItem().getDescription());
         }
     }
-
-    ;
-
 }
 
 

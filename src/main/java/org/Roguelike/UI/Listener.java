@@ -20,7 +20,6 @@ public class Listener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == 87) {
-            System.err.println("Key pressed: up");
             gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.GO_UP);
         }
         if (e.getKeyCode() == 83) {
@@ -39,7 +38,9 @@ public class Listener implements KeyListener {
             gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_1);
         }
 
-
+        if (e.getKeyCode() == 27) {
+            gameModel.stop();
+        }
     }
 
     @Override
