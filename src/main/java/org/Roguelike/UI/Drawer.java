@@ -7,22 +7,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Drawer extends Frame {
 
-    @NotNull Canvas map = new Map();
-    @NotNull Canvas timer = new Canvas();
-    @NotNull Canvas characteristics = new Characters();
-    @NotNull Canvas state = new Canvas();
-
-    GameFrame oldGameFrame;
+    Canvas map = new Map();
+    Canvas characteristics = new Characters();
     @Nullable GameFrame gameFrame;
 
     private static int BORDER = 5;
     private static int STRING_H = 20;
 
-    private static int MAP_X = 50;
-    private static int MAP_Y = 50;
+    private static int MAP_X = BORDER;
+    private static int MAP_Y = BORDER;
     private static int MAP_H = MapElementsParameters.MAP_HEIGHT;
     private static int MAP_W = MapElementsParameters.MAP_WIDTH;
 
@@ -35,27 +33,33 @@ public class Drawer extends Frame {
     public Drawer() {
         setLayout(new FlowLayout());
 
+        addWindowListener (new WindowAdapter() {
+            public void windowClosing (WindowEvent e) {
+                dispose();
+            }
+        });
+
         map.setBounds(MAP_X, MAP_Y, MAP_W, MAP_H);
         add(map);
 
         characteristics.setBounds(PANEL_X, PANEL_Y, PANEL_W, PANEL_H);
         add(characteristics);
 
-        setSize(BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER, BORDER + MAP_Y + MAP_H + BORDER);
+        setSize(BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER + 100, BORDER + MAP_Y + MAP_H + BORDER + 100);
         setVisible(true);
 
     }
 
-    public void drawFrame(GameFrame gameFrame) {
+    public void drawFrame(GameFrame gameFrame) throws InterruptedException {
 
         if (gameFrame.isStop()) {
             Dialog d = new Dialog(this, "Game over");
-            System.exit(1); // TODO: Why we don't reach this point?
+            d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER)/3,(BORDER + MAP_Y + MAP_H + BORDER)/3,300,50);
+            d.setVisible(true);
+            Thread.sleep(5000);
+            return;
         }
         this.gameFrame = gameFrame;
-
-        gameFrame.getMap().roomLines();
-        gameFrame.getMap().doors();
 
         map.repaint();
         characteristics.repaint();
@@ -83,6 +87,12 @@ public class Drawer extends Frame {
             for (var x : gameFrame.getMap().chests()) {
                 g.drawPolygon(x);
             }
+            for (var x : gameFrame.getMap().doors()) {
+                g.drawPolygon(x);
+            }
+//            for (var x : gameFrame.getMap().roomLines()) {
+//                g.drawLine(x.first().x(),x.first().y(), x.second().x(), x.second().y());
+//            }
         }
     }
 
@@ -113,30 +123,9 @@ public class Drawer extends Frame {
             for (var item : gameFrame.getItems()) {
                 addString(g, item.name() + " " + item.getDescription());
             }
-            if (gameFrame.getReceivedItem() != null)
-                addString(g, "Received " + gameFrame.getReceivedItem().getDescription());
+            if (gameFrame.getReceivedItem() != null) {
+                addString(g, "Received: " + gameFrame.getReceivedItem().getDescription());
+            }
         }
     }
 }
-
-
-//
-// g.drawString("TIME LEFT", 20, 20);
-//        g.drawString(LocalDateTime.now().toString(), 20, 35);
-//        // right panel
-//        // character characteristics (array of them)
-//        g.drawString("Health", 1000, 20);
-//        g.drawString("Happiness", 1000, 40);
-//        // backpack(array of them)
-//        g.drawString("Backpack", 1000, 200);
-//        // current cloth
-//        g.drawString("Current cloth: cloth_name", 1000, 500);
-//        // map
-//        // field
-//        g.setColor(Color.lightGray);
-//        g.fillRect(100, 100, 800, 500);
-//        // character
-//        g.setColor(Color.black);
-//        g.drawString("*", c.x, c.y);
-//        // things on map (array of them) (rectangulars?)
-//        g.drawString("e", 350, 350);

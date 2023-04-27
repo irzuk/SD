@@ -38,6 +38,37 @@ public class Listener implements KeyListener {
             gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_1);
         }
 
+        if (e.getKeyCode() == 50) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_2);
+        }
+
+        if (e.getKeyCode() == 51) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_3);
+        }
+
+        if (e.getKeyCode() == 52) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_4);
+        }
+
+        if (e.getKeyCode() == 53) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_5);
+        }
+
+        if (e.getKeyCode() == 54) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_6);
+        }
+
+        if (e.getKeyCode() == 55) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_7);
+        }
+
+        if (e.getKeyCode() == 56) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_8);
+        }
+        if (e.getKeyCode() == 57) {
+            gameModel.setKeyEvent(org.Roguelike.model.KeyEvent.USE_THING_9);
+        }
+
         if (e.getKeyCode() == 27) {
             gameModel.stop();
         }

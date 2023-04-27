@@ -68,8 +68,18 @@ public class GameModel implements Runnable {
                     .setCharacteristicsInfo(heroLogic.getCharacteristics())
                     .setReceivedItem(recievedItem)
                     .setStop(stop).build();
-            drawer.drawFrame(gameFrame);
+            try {
+                drawer.drawFrame(gameFrame);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             lastDrawing = System.currentTimeMillis();
+        }
+        var gameFrame = new GameFrame.GameFrameBuilder().setStop(true).build();
+        try {
+            drawer.drawFrame(gameFrame);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
