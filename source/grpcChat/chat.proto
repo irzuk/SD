@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package chat;
+option go_package = "..//grpcChat";
+
+service Chat {
+  rpc Connect(stream ChatMessage ) returns (stream ChatMessage) {}
+}
+
+message Empty {}
+message ChatMessage {
+    string author = 1;
+    string text = 2;
+    string time = 3; // it's bad but...
+}
