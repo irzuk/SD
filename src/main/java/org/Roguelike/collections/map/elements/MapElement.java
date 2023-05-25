@@ -41,6 +41,7 @@ public class MapElement extends Polygon {
         return leftTop;
     }
 
+    @SuppressWarnings("unused")
     public @NotNull Point rightTop() {
         return rightTop;
     }
