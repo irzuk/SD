@@ -22,6 +22,7 @@ public class SimpleHeroLogic implements HeroLogic {
     private final @NotNull Inventory inventory;
     private @NotNull MapElement location;
     private @Nullable Thing currentThing;
+    private long lastDecreasing = System.currentTimeMillis();
     public SimpleHeroLogic() {
         var cheerfullness = new Characteristic(30, 30);
         var satiety = new Characteristic(30, 30);
@@ -73,6 +74,16 @@ public class SimpleHeroLogic implements HeroLogic {
 
     @Override
     public boolean decreaseCharacteristics() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastDecreasing >= 1000) {
+            boolean stop = !processDecreasing();
+            lastDecreasing = currentTime;
+            return stop;
+        }
+        return false;
+    }
+
+    private boolean processDecreasing() {
         if (characteristics.cheerfullness.current == 0 && characteristics.satiety.current == 0) {
             if (characteristics.health.current == 0) {
                 return false;

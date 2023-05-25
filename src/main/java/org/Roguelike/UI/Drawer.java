@@ -66,7 +66,7 @@ public class Drawer extends Frame {
 
     private class Map extends Canvas {
         public void update(Graphics g) {
-            if (gameFrame == null) {
+            if (gameFrame == null || gameFrame.isStop()) {
                 return;
             }
             MapElement h = gameFrame.getHeroLocation();
@@ -111,7 +111,7 @@ public class Drawer extends Frame {
 
         @Override
         public void paint(Graphics g) {
-            if (gameFrame == null) {
+            if (gameFrame == null || gameFrame.isStop()) {
                 return;
             }
             currY = BORDER * 2;

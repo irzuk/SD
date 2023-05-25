@@ -1,7 +1,6 @@
 package org.Roguelike.model;
 
 import org.Roguelike.UI.Drawer;
-import org.Roguelike.UI.Listener;
 import org.Roguelike.collections.GameFrame;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.items.Item;
@@ -13,23 +12,20 @@ import org.Roguelike.model.map.RoomLogic;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.event.KeyListener;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.Roguelike.collections.map.MapElementsParameters.CELL_BORDER;
 
 public class GameModel implements Runnable {
-    private final @NotNull Drawer drawer = new Drawer();
+    private final @NotNull Drawer drawer;
     private final @NotNull MapLogic mapLogic = new RoomLogic();
     private final @NotNull HeroLogic heroLogic = new SimpleHeroLogic();
     private final @NotNull AtomicBoolean needStop = new AtomicBoolean(false);
-    private final @NotNull Lock lock = new ReentrantLock();
-    private final @NotNull LinkedList<@NotNull KeyEvent> queueKeyEvents = new LinkedList<>();
+    private final @NotNull Queue<@NotNull KeyEvent> queueKeyEvents = new ConcurrentLinkedQueue<>();
     private static final @NotNull Map<@NotNull KeyEvent, @NotNull Integer> eventToInd;
 
     static {
@@ -46,29 +42,20 @@ public class GameModel implements Runnable {
         eventToInd.put(KeyEvent.USE_THING_10, 9);
     }
 
-    public GameModel() {
-        KeyListener listener = new Listener(this);
-        drawer.addKeyListener(listener);
+    public GameModel(@NotNull Drawer drawer) {
+        this.drawer = drawer;
     }
 
     @Override
     public void run() {
-        long lastDecreasing = System.currentTimeMillis();
         while (!needStop.get()) {
             Item recievedItem = null;
-            lock.lock();
             var keyEvent = queueKeyEvents.poll();
-            lock.unlock();
             if (keyEvent != null) {
                 recievedItem = processKeyEvent(keyEvent);
             }
-            boolean stop = needStop.get();
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastDecreasing >= 1000) {
-                stop = !heroLogic.decreaseCharacteristics();
-                lastDecreasing = currentTime;
-            }
-            var gameFrame = new GameFrame.GameFrameBuilder()
+            boolean stop = needStop.get() || heroLogic.decreaseCharacteristics();
+            var frame = new GameFrame.GameFrameBuilder()
                     .setMap(mapLogic.getMap())
                     .setThings(heroLogic.getAvailableItems().stream().map(item -> (Thing) item).toList())
                     .setHeroLocation(heroLogic.getLocation())
@@ -76,28 +63,26 @@ public class GameModel implements Runnable {
                     .setReceivedItem(recievedItem)
                     .setStop(stop)
                     .setMapChanged(mapLogic.pollMapChanged()).build();
-            try {
-                drawer.drawFrame(gameFrame);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            draw(frame);
         }
-        var gameFrame = new GameFrame.GameFrameBuilder().setStop(true).build();
-        try {
-            drawer.drawFrame(gameFrame);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        var frame = new GameFrame.GameFrameBuilder().setStop(true).build();
+        draw(frame);
     }
 
     public void setKeyEvent(@NotNull KeyEvent keyEvent) {
-        lock.lock();
         queueKeyEvents.add(keyEvent);
-        lock.unlock();
     }
 
     public void stop() {
         needStop.set(true);
+    }
+
+    private void draw(GameFrame frame) {
+        try {
+            drawer.drawFrame(frame);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private @Nullable Item processKeyEvent(KeyEvent keyEvent) {
