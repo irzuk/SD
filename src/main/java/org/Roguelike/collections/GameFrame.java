@@ -35,6 +35,10 @@ public class GameFrame {
         this.mapChanged = mapChanged;
     }
 
+    public GameFrame(GameFrame gameFrame) {
+        this(gameFrame.info, gameFrame.map, gameFrame.heroLocation, gameFrame.items, gameFrame.receivedItem, gameFrame.stop, gameFrame.mapChanged);
+    }
+
     public @NotNull CharacteristicsInfo getInfo() {
         return info;
     }

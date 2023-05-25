@@ -28,7 +28,6 @@ public class Drawer extends Frame {
     private static final int PANEL_H = MAP_H;
     private static final int PANEL_W = 200;
 
-
     public Drawer() {
         setLayout(new FlowLayout());
 
@@ -51,19 +50,15 @@ public class Drawer extends Frame {
 
     public void drawFrame(GameFrame gameFrame) throws InterruptedException {
 
-        if (gameFrame.isStop()) {
+        this.gameFrame = new GameFrame(gameFrame);
+
+        if (this.gameFrame.isStop()) {
             Dialog d = new Dialog(this, "Game over");
             d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER) / 3, (BORDER + MAP_Y + MAP_H + BORDER) / 3, 300, 50);
             d.setVisible(true);
             Thread.sleep(5000);
             return;
         }
-
-        // TODO: Received Item is not null always
-//        if (gameFrame.getReceivedItem() != null) {
-//            System.out.println(gameFrame.getReceivedItem().getDescription());
-//        }
-        this.gameFrame = gameFrame;
 
         map.repaint();
         characteristics.repaint();
@@ -75,6 +70,10 @@ public class Drawer extends Frame {
                 return;
             }
             MapElement h = gameFrame.getHeroLocation();
+            if(gameFrame.isMapChanged()) {
+                System.out.println(gameFrame.isMapChanged());
+                g.clearRect(0,0, MAP_W, MAP_H);
+            }
             g.clearRect(h.leftTop().x() - MapElementsParameters.HERO_HEIGHT * 2, h.leftTop().y() - MapElementsParameters.HERO_WIDTH * 2, MapElementsParameters.HERO_HEIGHT * 4, MapElementsParameters.HERO_WIDTH * 4);
             paint(g);
         }
@@ -131,6 +130,16 @@ public class Drawer extends Frame {
             var item = gameFrame.getReceivedItem();
             if (item != null) {
                 addString(g, "Received: " + item.getDescription());
+            }
+            if(gameFrame.isMapChanged()) {
+                addString(g, "Welcome to new room!");
+            }
+            //TODO: always null/false at this point of execution
+            if (gameFrame.getReceivedItem() != null) {
+                System.out.println(gameFrame.getReceivedItem().getDescription());
+            }
+            if (gameFrame.isMapChanged()) {
+                System.out.println(gameFrame.isMapChanged());
             }
         }
     }
