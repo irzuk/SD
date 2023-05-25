@@ -55,7 +55,7 @@ public class GameModel implements Runnable {
                 recievedItem = processKeyEvent(keyEvent);
             }
             boolean stop = needStop.get() || heroLogic.decreaseCharacteristics();
-            var frame = new GameFrame.GameFrameBuilder()
+            var gameFrame = new GameFrame.GameFrameBuilder()
                     .setMap(mapLogic.getMap())
                     .setThings(heroLogic.getAvailableItems().stream().map(item -> (Thing) item).toList())
                     .setHeroLocation(heroLogic.getLocation())
@@ -63,7 +63,11 @@ public class GameModel implements Runnable {
                     .setReceivedItem(recievedItem)
                     .setStop(stop)
                     .setMapChanged(mapLogic.pollMapChanged()).build();
-            draw(frame);
+            try {
+                drawer.drawFrame(gameFrame);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         var frame = new GameFrame.GameFrameBuilder().setStop(true).build();
         draw(frame);

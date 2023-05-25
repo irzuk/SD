@@ -1,6 +1,7 @@
 package org.Roguelike.UI;
 
 import org.Roguelike.collections.GameFrame;
+import org.Roguelike.collections.geometry.Point;
 import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.Nullable;
@@ -65,6 +66,7 @@ public class Drawer extends Frame {
     }
 
     private class Map extends Canvas {
+        private MapElement prevHeroLocation = MapElement.fromPoint(new Point(0, 0));
         public void update(Graphics g) {
             if (gameFrame == null || gameFrame.isStop()) {
                 return;
@@ -74,13 +76,24 @@ public class Drawer extends Frame {
                 System.out.println(gameFrame.isMapChanged());
                 g.clearRect(0,0, MAP_W, MAP_H);
             }
-            g.clearRect(h.leftTop().x() - MapElementsParameters.HERO_HEIGHT * 2, h.leftTop().y() - MapElementsParameters.HERO_WIDTH * 2, MapElementsParameters.HERO_HEIGHT * 4, MapElementsParameters.HERO_WIDTH * 4);
+            // TODO: Ira, please, check this code. I tried remove hero trace
+            if (!h.toString().equals(prevHeroLocation.toString())) {
+                g.clearRect(prevHeroLocation.leftTop().x() - BORDER,
+                        prevHeroLocation.leftTop().y() - BORDER,
+                        MapElementsParameters.HERO_WIDTH + 2 * BORDER,
+                        MapElementsParameters.HERO_HEIGHT + 2 * BORDER);
+                g.clearRect(h.leftTop().x() - BORDER,
+                        h.leftTop().y() - BORDER,
+                        MapElementsParameters.HERO_WIDTH + 2 * BORDER,
+                        MapElementsParameters.HERO_HEIGHT + 2 * BORDER);
+                prevHeroLocation = h;
+            }
             paint(g);
         }
 
         @Override
         public void paint(Graphics g) {
-            if (gameFrame == null) {
+            if (gameFrame == null || gameFrame.isStop()) {
                 return;
             }
             g.setColor(Color.RED);

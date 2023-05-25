@@ -1,6 +1,5 @@
 package org.Roguelike.collections.geometry;
 
-import org.Roguelike.collections.map.elements.HeroElement;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,10 +59,6 @@ public class Vector {
     @Override
     public @NotNull String toString() {
         return String.format("(%d, %d)", x, y);
-    }
-
-    public @NotNull MapElement moveHero(@NotNull MapElement location) {
-        return HeroElement.heroFromPoint(Point.byXY(location.leftBot(), x, y));
     }
 
     public boolean intersectsLine(@NotNull MapElement location, @NotNull Line line) {

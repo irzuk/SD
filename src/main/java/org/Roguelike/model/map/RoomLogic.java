@@ -63,7 +63,7 @@ public class RoomLogic implements MapLogic {
             }
         }
         chestsLock.unlock();
-        var newHeroLocation = vector.moveHero(location);
+        var newHeroLocation = location.move(vector);
         return new MapLogicResult(newHeroLocation, item);
     }
 
@@ -116,7 +116,7 @@ public class RoomLogic implements MapLogic {
         } else if (sideWithDoor == BOT) {
             targetVector = Vector.vectorUp(HERO_HEIGHT + CELL_BORDER);
         }
-        var heroLocation = HeroElement.heroFromPoint(targetDoor.leftBot());
-        return targetVector.moveHero(heroLocation);
+        var heroLocation = HeroElement.fromPoint(targetDoor.leftBot());
+        return heroLocation.move(targetVector);
     }
 }

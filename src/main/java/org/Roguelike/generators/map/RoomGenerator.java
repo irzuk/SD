@@ -46,7 +46,7 @@ public class RoomGenerator implements MapGenerator {
                  col += MapElementsParameters.CHEST_WIDTH) {
                 var tmp = ThreadLocalRandom.current().nextInt(0, 100);
                 if (tmp < prob_perc) {
-                    chests.add(ChestElement.chestFromPoint(new Point(row, col)));
+                    chests.add(ChestElement.fromPoint(new Point(row, col)));
                 }
             }
         }
@@ -78,6 +78,6 @@ public class RoomGenerator implements MapGenerator {
             default -> throw new IllegalStateException("Unexpected value: " + sideWithDoor);
         }
 
-        return new Map(roomLines, chests, new ArrayList<MapElement>(List.of(door)));
+        return new Map(roomLines, chests, new ArrayList<>(List.of(door)));
     }
 }

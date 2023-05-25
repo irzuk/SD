@@ -11,13 +11,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class GameFrame {
-    protected final @NotNull CharacteristicsInfo info;
-    protected final @NotNull Map map;
-    protected final @NotNull MapElement heroLocation;
-    protected final @NotNull List<Thing> items;
-    protected final @Nullable Item receivedItem;
-    protected final boolean stop;
-    protected final boolean mapChanged;
+    private final @NotNull CharacteristicsInfo info;
+    private final @NotNull Map map;
+    private final @NotNull MapElement heroLocation;
+    private final @NotNull List<Thing> items;
+    private final @Nullable Item receivedItem;
+    private final boolean stop;
+    private final boolean mapChanged;
 
     private GameFrame(@NotNull CharacteristicsInfo info,
                       @NotNull Map map,

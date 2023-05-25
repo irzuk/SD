@@ -29,7 +29,7 @@ public class SimpleHeroLogic implements HeroLogic {
         var health = new Characteristic(50, 50);
         characteristics = new CharacteristicsInfo(cheerfullness, satiety, health);
         inventory = new SimpleInventory();
-        location = HeroElement.heroFromPoint(new Point(MAP_WIDTH / 2 - HERO_WIDTH / 2, MAP_HEIGHT / 2 - HERO_HEIGHT / 2));
+        location = HeroElement.fromPoint(new Point(MAP_WIDTH / 2 - HERO_WIDTH / 2, MAP_HEIGHT / 2 - HERO_HEIGHT / 2));
     }
 
 

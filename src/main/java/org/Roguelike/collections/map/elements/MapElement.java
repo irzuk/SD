@@ -2,17 +2,22 @@ package org.Roguelike.collections.map.elements;
 
 import org.Roguelike.collections.geometry.Line;
 import org.Roguelike.collections.geometry.Point;
+import org.Roguelike.collections.geometry.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 import static org.Roguelike.collections.geometry.Point.*;
+import static org.Roguelike.collections.map.MapElementsParameters.CELL_BORDER;
 
 public class MapElement extends Polygon {
     protected Point leftBot;
     protected Point leftTop;
     protected Point rightTop;
     protected Point rightBot;
+
+    protected static int WIDTH = CELL_BORDER;
+    protected static int HEIGHT = CELL_BORDER;
 
     protected MapElement() {
     }
@@ -29,8 +34,12 @@ public class MapElement extends Polygon {
         this.addPoint(rightBot.x(), rightBot.y());
     }
 
-    public static MapElement squareFromPoint(Point leftBot, int width, int height) {
-        return new MapElement(leftBot, byY(leftBot, height), byXY(leftBot, width, height), byX(leftBot, width));
+    public static @NotNull MapElement fromPoint(Point leftBot) {
+        return new MapElement(leftBot, byY(leftBot, HEIGHT), byXY(leftBot, WIDTH, HEIGHT), byX(leftBot, WIDTH));
+    }
+
+    public @NotNull MapElement move(Vector vector) {
+        return fromPoint(Point.byXY(leftBot, vector.getX(), vector.getY()));
     }
 
     public @NotNull Point leftBot() {
