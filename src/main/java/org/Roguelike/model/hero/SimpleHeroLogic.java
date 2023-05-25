@@ -15,10 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static org.Roguelike.collections.items.ItemType.THING;
-import static org.Roguelike.collections.map.MapElementsParameters.MAP_HEIGHT;
-import static org.Roguelike.collections.map.MapElementsParameters.MAP_WIDTH;
-import static org.Roguelike.collections.map.MapElementsParameters.HERO_HEIGHT;
-import static org.Roguelike.collections.map.MapElementsParameters.HERO_WIDTH;
+import static org.Roguelike.collections.map.MapElementsParameters.*;
 
 public class SimpleHeroLogic implements HeroLogic {
     private final @NotNull CharacteristicsInfo characteristics;
@@ -55,24 +52,23 @@ public class SimpleHeroLogic implements HeroLogic {
     }
 
     @Override
-    public boolean setItem(@NotNull Item item) {
-        assert item.getType() == THING;
-        if (!inventory.contains(item)) {
-            return false;
+    public void setItem(int ind) {
+        var newThing = inventory.pollByInd(ind);
+        if (newThing == null) {
+            return;
         }
         if (currentThing != null) {
-            if (!inventory.remove(item) || !inventory.add(currentThing)) {
-                return false;
+            if (!inventory.add(currentThing)) {
+                return;
             }
 
             characteristics.cheerfullness.full -= currentThing.getCheerfullness();
             characteristics.satiety.full -= currentThing.getSatiety();
         }
-        currentThing = (Thing) item;
+        currentThing = newThing;
 
         characteristics.cheerfullness.full += currentThing.getCheerfullness();
         characteristics.satiety.full += currentThing.getSatiety();
-        return true;
     }
 
     @Override

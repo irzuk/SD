@@ -14,8 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.KeyListener;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,6 +30,21 @@ public class GameModel implements Runnable {
     private final @NotNull AtomicBoolean needStop = new AtomicBoolean(false);
     private final @NotNull Lock lock = new ReentrantLock();
     private final @NotNull LinkedList<@NotNull KeyEvent> queueKeyEvents = new LinkedList<>();
+    private static final @NotNull Map<@NotNull KeyEvent, @NotNull Integer> eventToInd;
+
+    static {
+        eventToInd = new HashMap<>();
+        eventToInd.put(KeyEvent.USE_THING_1, 0);
+        eventToInd.put(KeyEvent.USE_THING_2, 1);
+        eventToInd.put(KeyEvent.USE_THING_3, 2);
+        eventToInd.put(KeyEvent.USE_THING_4, 3);
+        eventToInd.put(KeyEvent.USE_THING_5, 4);
+        eventToInd.put(KeyEvent.USE_THING_6, 5);
+        eventToInd.put(KeyEvent.USE_THING_7, 6);
+        eventToInd.put(KeyEvent.USE_THING_8, 7);
+        eventToInd.put(KeyEvent.USE_THING_9, 8);
+        eventToInd.put(KeyEvent.USE_THING_10, 9);
+    }
 
     public GameModel() {
         KeyListener listener = new Listener(this);
@@ -38,7 +54,6 @@ public class GameModel implements Runnable {
     @Override
     public void run() {
         long lastDecreasing = System.currentTimeMillis();
-        long lastDrawing = System.currentTimeMillis();
         while (!needStop.get()) {
             Item recievedItem = null;
             lock.lock();
@@ -47,19 +62,11 @@ public class GameModel implements Runnable {
             if (keyEvent != null) {
                 recievedItem = processKeyEvent(keyEvent);
             }
-            boolean stop = false;
+            boolean stop = needStop.get();
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastDecreasing >= 1000) {
                 stop = !heroLogic.decreaseCharacteristics();
                 lastDecreasing = currentTime;
-            }
-            currentTime = System.currentTimeMillis();
-            if (currentTime - lastDrawing < 30) {
-                try {
-                    Thread.sleep(currentTime - lastDrawing);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             }
             var gameFrame = new GameFrame.GameFrameBuilder()
                     .setMap(mapLogic.getMap())
@@ -67,13 +74,13 @@ public class GameModel implements Runnable {
                     .setHeroLocation(heroLogic.getLocation())
                     .setCharacteristicsInfo(heroLogic.getCharacteristics())
                     .setReceivedItem(recievedItem)
-                    .setStop(stop).build();
+                    .setStop(stop)
+                    .setMapChanged(mapLogic.pollMapChanged()).build();
             try {
                 drawer.drawFrame(gameFrame);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            lastDrawing = System.currentTimeMillis();
         }
         var gameFrame = new GameFrame.GameFrameBuilder().setStop(true).build();
         try {
@@ -99,7 +106,7 @@ public class GameModel implements Runnable {
             case GO_DOWN -> processKeyWithVector(Vector.vectorUp(CELL_BORDER));
             case GO_LEFT -> processKeyWithVector(Vector.vectorLeft(CELL_BORDER));
             case GO_RIGHT -> processKeyWithVector(Vector.vectorRight(CELL_BORDER));
-            default -> setItemAndReturn(keyEvent.getThing());
+            default -> setItemAndReturn(keyEvent);
         };
     }
 
@@ -111,8 +118,8 @@ public class GameModel implements Runnable {
         return res.item();
     }
 
-    private @Nullable Item setItemAndReturn(@NotNull Thing thing) {
-        heroLogic.setItem(thing);
+    private @Nullable Item setItemAndReturn(@NotNull KeyEvent event) {
+        heroLogic.setItem(eventToInd.get(event));
         return null;
     }
 }

@@ -4,7 +4,10 @@ import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.items.Thing;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.Roguelike.collections.items.ItemType.THING;
 
@@ -18,15 +21,20 @@ public class SimpleInventory implements Inventory {
     }
 
     @Override
-    public boolean contains(@NotNull Item item) {
-        assert item.getType() == THING;
-        return availableThings.contains((Thing) item);
-    }
-
-    @Override
-    public boolean remove(@NotNull Item item) {
-        assert item.getType() == THING;
-        return availableThings.remove((Thing) item);
+    public Thing pollByInd(int ind) {
+        int counter = 0;
+        Thing res = null;
+        for (var thing : availableThings) {
+            if (counter == ind) {
+                res = thing;
+                break;
+            }
+            counter++;
+        }
+        if (res != null) {
+            availableThings.remove(res);
+        }
+        return res;
     }
 
     @Override

@@ -3,7 +3,6 @@ package org.Roguelike.UI;
 import org.Roguelike.collections.GameFrame;
 import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.MapElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -16,25 +15,25 @@ public class Drawer extends Frame {
     Canvas characteristics = new Characters();
     @Nullable GameFrame gameFrame;
 
-    private static int BORDER = 5;
-    private static int STRING_H = 20;
+    private static final int BORDER = 5;
+    private static final int STRING_H = 20;
 
-    private static int MAP_X = BORDER;
-    private static int MAP_Y = BORDER;
-    private static int MAP_H = MapElementsParameters.MAP_HEIGHT;
-    private static int MAP_W = MapElementsParameters.MAP_WIDTH;
+    private static final int MAP_X = BORDER;
+    private static final int MAP_Y = BORDER;
+    private static final int MAP_H = MapElementsParameters.MAP_HEIGHT;
+    private static final int MAP_W = MapElementsParameters.MAP_WIDTH;
 
-    private static int PANEL_X = MAP_W + MAP_X + BORDER;
-    private static int PANEL_Y = BORDER;
-    private static int PANEL_H = MAP_H;
-    private static int PANEL_W = 200;
+    private static final int PANEL_X = MAP_W + MAP_X + BORDER;
+    private static final int PANEL_Y = BORDER;
+    private static final int PANEL_H = MAP_H;
+    private static final int PANEL_W = 200;
 
 
     public Drawer() {
         setLayout(new FlowLayout());
 
-        addWindowListener (new WindowAdapter() {
-            public void windowClosing (WindowEvent e) {
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
                 dispose();
             }
         });
@@ -54,11 +53,16 @@ public class Drawer extends Frame {
 
         if (gameFrame.isStop()) {
             Dialog d = new Dialog(this, "Game over");
-            d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER)/3,(BORDER + MAP_Y + MAP_H + BORDER)/3,300,50);
+            d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER) / 3, (BORDER + MAP_Y + MAP_H + BORDER) / 3, 300, 50);
             d.setVisible(true);
             Thread.sleep(5000);
             return;
         }
+
+        // TODO: Received Item is not null always
+//        if (gameFrame.getReceivedItem() != null) {
+//            System.out.println(gameFrame.getReceivedItem().getDescription());
+//        }
         this.gameFrame = gameFrame;
 
         map.repaint();
@@ -91,13 +95,14 @@ public class Drawer extends Frame {
                 g.drawPolygon(x);
             }
 //            for (var x : gameFrame.getMap().roomLines()) {
-//                g.drawLine(x.first().x(),x.first().y(), x.second().x(), x.second().y());
+//                g.drawLine(x.first().x(), x.first().y(), x.second().x(), x.second().y());
 //            }
         }
     }
 
     private class Characters extends Canvas {
-        private int currX = BORDER;
+        @SuppressWarnings("all")
+        private final int currX = BORDER;
         private int currY = BORDER;
 
         private void addString(Graphics g, String s) {
@@ -121,10 +126,11 @@ public class Drawer extends Frame {
             addString(g, "Items");
 
             for (var item : gameFrame.getItems()) {
-                addString(g, item.name() + " " + item.getDescription());
+                addString(g, item.getDescription());
             }
-            if (gameFrame.getReceivedItem() != null) {
-                addString(g, "Received: " + gameFrame.getReceivedItem().getDescription());
+            var item = gameFrame.getReceivedItem();
+            if (item != null) {
+                addString(g, "Received: " + item.getDescription());
             }
         }
     }

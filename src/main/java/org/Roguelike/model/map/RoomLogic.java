@@ -4,7 +4,6 @@ import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.MapLogicResult;
-import org.Roguelike.collections.map.elements.DoorElement;
 import org.Roguelike.collections.map.elements.HeroElement;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.Roguelike.generators.items.DistributionItemGenerator;
@@ -14,16 +13,22 @@ import org.Roguelike.generators.map.RoomGenerator;
 import org.Roguelike.generators.map.SideWithDoor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import static org.Roguelike.collections.map.MapElementsParameters.*;
 import static org.Roguelike.generators.map.SideWithDoor.*;
-import static org.Roguelike.collections.map.MapElementsParameters.CELL_BORDER;
-import static org.Roguelike.collections.map.MapElementsParameters.HERO_WIDTH;
-import static org.Roguelike.collections.map.MapElementsParameters.HERO_HEIGHT;
 
 public class RoomLogic implements MapLogic {
     private @NotNull Map map;
     private final @NotNull MapGenerator mapGenerator;
     private final @NotNull ItemGenerator itemGenerator;
+    private final @NotNull Lock chestsLock = new ReentrantLock();
+
+    private final @NotNull AtomicBoolean mapChanged = new AtomicBoolean(true);
 
     public RoomLogic() {
         mapGenerator = new RoomGenerator();
@@ -37,6 +42,7 @@ public class RoomLogic implements MapLogic {
             if (vector.intersectsElement(location, door)) {
                 var sideOfDoor = getSideByVector(vector);
                 map = mapGenerator.generateMap(sideOfDoor);
+                mapChanged.set(true);
                 var newHeroLocation = getNewHeroLocationBySide(sideOfDoor);
                 return new MapLogicResult(newHeroLocation, null);
             }
@@ -47,7 +53,8 @@ public class RoomLogic implements MapLogic {
             }
         }
         Item item = null;
-        for (var it = map.chests().iterator(); it.hasNext();) {
+        chestsLock.lock();
+        for (var it = map.chests().iterator(); it.hasNext(); ) {
             var chest = it.next();
             if (vector.intersectsElement(location, chest)) {
                 it.remove();
@@ -55,13 +62,23 @@ public class RoomLogic implements MapLogic {
                 break;
             }
         }
+        chestsLock.unlock();
         var newHeroLocation = vector.moveHero(location);
         return new MapLogicResult(newHeroLocation, item);
     }
 
     @Override
     public @NotNull Map getMap() {
-        return map;
+        chestsLock.lock();
+        var chestsCopy = new LinkedList<>(List.copyOf(map.chests()));
+        Map mapCopy = new Map(map.roomLines(), chestsCopy, map.doors());
+        chestsLock.unlock();
+        return mapCopy;
+    }
+
+    @Override
+    public boolean pollMapChanged() {
+        return mapChanged.compareAndSet(true, false);
     }
 
     private @NotNull SideWithDoor getSideByVector(Vector vector) {

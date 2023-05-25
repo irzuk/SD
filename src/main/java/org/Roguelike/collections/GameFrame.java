@@ -17,18 +17,22 @@ public class GameFrame {
     protected final @NotNull List<Thing> items;
     protected final @Nullable Item receivedItem;
     protected final boolean stop;
+    protected final boolean mapChanged;
 
     private GameFrame(@NotNull CharacteristicsInfo info,
                       @NotNull Map map,
                       @NotNull MapElement heroLocation,
                       @NotNull List<Thing> items,
-                      @Nullable Item receivedItem, boolean stop) {
+                      @Nullable Item receivedItem,
+                      boolean stop,
+                      boolean mapChanged) {
         this.info = info;
         this.map = map;
         this.heroLocation = heroLocation;
         this.items = items;
         this.receivedItem = receivedItem;
         this.stop = stop;
+        this.mapChanged = mapChanged;
     }
 
     public @NotNull CharacteristicsInfo getInfo() {
@@ -55,13 +59,18 @@ public class GameFrame {
         return stop;
     }
 
+    public boolean isMapChanged() {
+        return mapChanged;
+    }
+
     public static class GameFrameBuilder {
         protected CharacteristicsInfo info;
         protected Map map;
         protected MapElement heroLocation;
         protected List<@NotNull Thing> items;
         protected Item receivedItem;
-        protected boolean stop;
+        protected boolean stop = false;
+        protected boolean mapChanged = false;
         public GameFrameBuilder setCharacteristicsInfo(@NotNull CharacteristicsInfo info) {
             this.info = info;
             return this;
@@ -88,8 +97,13 @@ public class GameFrame {
             return this;
         }
 
+        public GameFrameBuilder setMapChanged(boolean mapChanged) {
+            this.mapChanged = mapChanged;
+            return this;
+        }
+
         public GameFrame build() {
-            return new GameFrame(info, map, heroLocation, items, receivedItem, stop);
+            return new GameFrame(info, map, heroLocation, items, receivedItem, stop, mapChanged);
         }
     }
 }
