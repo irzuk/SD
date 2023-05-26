@@ -63,7 +63,7 @@ public enum Essence implements Item {
 
         @Override
         public double getProbability() {
-            return 0.9;
+            return 0.09;
         }
     },
     CHEESEBURGER_TASTY_AND_POINT{
@@ -84,7 +84,7 @@ public enum Essence implements Item {
 
         @Override
         public double getProbability() {
-            return 0.7;
+            return 0.07;
         }
     },
     FUNNY_JOKE{
@@ -147,7 +147,7 @@ public enum Essence implements Item {
 
         @Override
         public double getProbability() {
-            return 0.9;
+            return 0.09;
         }
     },
     ADRENALINE_BUBBLE{
@@ -168,7 +168,7 @@ public enum Essence implements Item {
 
         @Override
         public double getProbability() {
-            return 0.7;
+            return 0.07;
         }
     },
     NESCAFE_3_IN_1{
@@ -189,7 +189,7 @@ public enum Essence implements Item {
 
         @Override
         public double getProbability() {
-            return 0.6;
+            return 0.06;
         }
     },
     RED_BULL{
@@ -210,7 +210,7 @@ public enum Essence implements Item {
 
         @Override
         public double getProbability() {
-            return 0.4;
+            return 0.04;
         }
     };
 
