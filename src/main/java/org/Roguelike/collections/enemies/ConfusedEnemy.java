@@ -2,6 +2,7 @@ package org.Roguelike.collections.enemies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.geometry.Vector;
+import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +30,11 @@ public class ConfusedEnemy extends Enemy {
     @Override
     public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
         var side = ThreadLocalRandom.current().nextInt(0, 4);
-        if (side == 0) return new Vector(0, 1);
-        if (side == 1) return new Vector(0, -1);
-        if (side == 2) return new Vector(1, 0);
-        return new Vector(-1, 0);
+
+        if (side == 0) return new Vector(0, MapElementsParameters.CELL_BORDER);
+        if (side == 1) return new Vector(0, -MapElementsParameters.CELL_BORDER);
+        if (side == 2) return new Vector(MapElementsParameters.CELL_BORDER, 0);
+        return new Vector(-MapElementsParameters.CELL_BORDER, 0);
     }
 
     @Override

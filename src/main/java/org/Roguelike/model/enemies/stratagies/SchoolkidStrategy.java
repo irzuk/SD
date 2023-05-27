@@ -2,6 +2,7 @@ package org.Roguelike.model.enemies.stratagies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.geometry.Vector;
+import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,9 +18,18 @@ public class SchoolkidStrategy implements BehaviorStrategy {
     }
     @Override
     public @NotNull Vector calculateDirection(@NotNull MapElement heroLocation, @NotNull MapElement enemyLocation) {
-        var x = heroLocation.leftTop().x() - enemyLocation.leftBot().x();
-        var y = heroLocation.leftTop().y() - enemyLocation.leftBot().y();
-        return new Vector(-x, -y);
+        var x = Math.abs(heroLocation.leftTop().x() - enemyLocation.leftBot().x());
+        var y = Math.abs(heroLocation.leftTop().y() - enemyLocation.leftBot().y());
+        if (x == 0) {
+            return new Vector(0, -y * MapElementsParameters.CELL_BORDER);
+        }
+        if (y == 0) {
+            return new Vector(-x * MapElementsParameters.CELL_BORDER, 0);
+        }
+        if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
+            return new Vector(0, -y * MapElementsParameters.CELL_BORDER);
+        }
+        return new Vector(-x * MapElementsParameters.CELL_BORDER, 0);
     }
 
     @Override
@@ -31,9 +41,6 @@ public class SchoolkidStrategy implements BehaviorStrategy {
         var res = (heroCharacteristics.cheerfullness.current - INIT_CHEER) + (heroCharacteristics.satiety.current - INIT_SATIETY);
         var DAMAGE_CHEER = -5;
         var DAMAGE_SATIETY = -5;
-        /* Thread.sleep(200, 0);
-         * Uncomment if needed, but it may throw exception
-         * */
         heroCharacteristics.cheerfullness.current -= DAMAGE_CHEER;
         heroCharacteristics.satiety.current -= DAMAGE_SATIETY;
         return res;
