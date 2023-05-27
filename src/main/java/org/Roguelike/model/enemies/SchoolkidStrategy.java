@@ -5,9 +5,16 @@ import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SchoolkidStrategy implements BehaviorStrategy {
+    private LocalDateTime lastFight;
+
+    public SchoolkidStrategy() {
+        lastFight = LocalDateTime.now();
+    }
     @Override
     public @NotNull Vector calculateDirection(@NotNull MapElement heroLocation, @NotNull MapElement enemyLocation) {
         var x = heroLocation.leftTop().x() - enemyLocation.leftBot().x();
@@ -17,6 +24,10 @@ public class SchoolkidStrategy implements BehaviorStrategy {
 
     @Override
     public int fight(@NotNull CharacteristicsInfo heroCharacteristics) {
+        if (ChronoUnit.MILLIS.between(LocalDateTime.now(), lastFight) > DUR_MS) {
+            lastFight = LocalDateTime.now();
+            return 0;
+        }
         var res = (heroCharacteristics.cheerfullness.current - INIT_CHEER) + (heroCharacteristics.satiety.current - INIT_SATIETY);
         var DAMAGE_CHEER = -5;
         var DAMAGE_SATIETY = -5;

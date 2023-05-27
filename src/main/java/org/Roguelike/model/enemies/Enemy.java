@@ -70,7 +70,10 @@ public class Enemy {
      */
     public boolean fight(CharacteristicsInfo heroCharacteristics) {
         var res = strategy.fight(heroCharacteristics);
-        health.current -= res;
-        return strategy.tryConfuse();
+        if (res >= 0) {
+            health.current -= res;
+            return strategy.tryConfuse();
+        }
+        return false;
     }
 }

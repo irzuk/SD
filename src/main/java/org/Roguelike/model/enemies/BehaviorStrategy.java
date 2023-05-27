@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 public interface BehaviorStrategy {
     public static int INIT_CHEER = 30;
     public static int INIT_SATIETY = 30;
+    public static int DUR_MS = 200;
+
     /*
      * Arguments:
      *  heroLocation - позиция героя в текущий момент.
