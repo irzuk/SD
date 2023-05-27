@@ -1,4 +1,4 @@
-package org.Roguelike.model.enemies;
+package org.Roguelike.model.enemies.stratagies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.geometry.Vector;
@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
  * Интерфейс описывает стратегии поведения врагов.
  */
 public interface BehaviorStrategy {
-    public static int INIT_CHEER = 30;
-    public static int INIT_SATIETY = 30;
-    public static int DUR_MS = 200;
+    int INIT_CHEER = 30;
+    int INIT_SATIETY = 30;
+    int DUR_MS = 200;
 
     /*
      * Arguments:

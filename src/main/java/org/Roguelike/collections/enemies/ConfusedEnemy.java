@@ -1,5 +1,6 @@
-package org.Roguelike.model.enemies;
+package org.Roguelike.collections.enemies;
 
+import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
@@ -10,9 +11,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * Декоратор для сконфуженного врага. Должен двигаться в произвольных направлениях параллельных осям координат.
  */
 public class ConfusedEnemy extends Enemy {
+    @NotNull
+    private final Enemy entryEnemy;
 
-    public ConfusedEnemy(Enemy entryEnemy) {
-        super(entryEnemy.experience, entryEnemy.health, entryEnemy.enemyLocation, entryEnemy.strategy);
+    public ConfusedEnemy(@NotNull Enemy entryEnemy) {
+        this.entryEnemy = entryEnemy;
     }
 
     /*
@@ -24,7 +27,7 @@ public class ConfusedEnemy extends Enemy {
      *  Движется в произвольном направлении.
      */
     @Override
-    public @NotNull Vector findDirection(MapElement heroLocation) {
+    public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
         var side = ThreadLocalRandom.current().nextInt(0, 4);
         if (side == 0) return new Vector(0, 1);
         if (side == 1) return new Vector(0, -1);
@@ -32,4 +35,28 @@ public class ConfusedEnemy extends Enemy {
         return new Vector(-1, 0);
     }
 
+    @Override
+    public boolean isDead() {
+        return entryEnemy.isDead();
+    }
+
+    @Override
+    public @NotNull MapElement getEnemyLocation() {
+        return entryEnemy.getEnemyLocation();
+    }
+
+    @Override
+    public void move(Vector direction) {
+        entryEnemy.move(direction);
+    }
+
+    @Override
+    public boolean fight(CharacteristicsInfo heroCharacteristics) {
+        return entryEnemy.fight(heroCharacteristics);
+    }
+
+    @Override
+    public int getExperience() {
+        return entryEnemy.getExperience();
+    }
 }

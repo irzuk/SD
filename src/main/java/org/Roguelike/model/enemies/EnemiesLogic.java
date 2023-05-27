@@ -1,6 +1,7 @@
 package org.Roguelike.model.enemies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
+import org.Roguelike.collections.enemies.Enemy;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.elements.MapElement;

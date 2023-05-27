@@ -1,4 +1,4 @@
-package org.Roguelike.model.enemies;
+package org.Roguelike.model.enemies.stratagies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.geometry.Vector;

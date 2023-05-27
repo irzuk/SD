@@ -1,4 +1,4 @@
-package org.Roguelike.model.enemies;
+package org.Roguelike.model.enemies.stratagies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
 import org.Roguelike.collections.geometry.Vector;
@@ -9,17 +9,14 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class TeacherStrategy implements BehaviorStrategy {
+public class NightstandStrategy implements BehaviorStrategy {
     private LocalDateTime lastFight;
-
-    public TeacherStrategy() {
+    public NightstandStrategy() {
         lastFight = LocalDateTime.now();
     }
     @Override
     public @NotNull Vector calculateDirection(@NotNull MapElement heroLocation, @NotNull MapElement enemyLocation) {
-        var x = heroLocation.leftTop().x() - enemyLocation.leftBot().x();
-        var y = heroLocation.leftTop().y() - enemyLocation.leftBot().y();
-        return new Vector(x, y);
+        return new Vector(0, 0);
     }
 
     @Override
@@ -29,11 +26,8 @@ public class TeacherStrategy implements BehaviorStrategy {
             return 0;
         }
         var res = (heroCharacteristics.cheerfullness.current - INIT_CHEER) + (heroCharacteristics.satiety.current - INIT_SATIETY);
-        var DAMAGE_CHEER = 10;
-        var DAMAGE_SATIETY = 10;
-        /* Thread.sleep(200, 0);
-         * Uncomment if needed, but it may throw exception
-         * */
+        var DAMAGE_CHEER = 5;
+        var DAMAGE_SATIETY = 5;
         heroCharacteristics.cheerfullness.current -= DAMAGE_CHEER;
         heroCharacteristics.satiety.current -= DAMAGE_SATIETY;
         return res;
@@ -41,7 +35,7 @@ public class TeacherStrategy implements BehaviorStrategy {
 
     @Override
     public boolean tryConfuse() {
-        var CONFUSE_PROB = 15;
+        var CONFUSE_PROB = 25;
         return ThreadLocalRandom.current().nextInt(0, 100) < CONFUSE_PROB;
     }
 }

@@ -1,10 +1,7 @@
 package org.Roguelike.collections.map;
 
 import org.Roguelike.collections.geometry.Line;
-import org.Roguelike.collections.map.elements.ChestElement;
-import org.Roguelike.collections.map.elements.DoorElement;
 import org.Roguelike.collections.map.elements.MapElement;
-import org.Roguelike.model.enemies.Enemy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;

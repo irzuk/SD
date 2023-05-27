@@ -27,7 +27,8 @@ public class SimpleHeroLogic implements HeroLogic {
         var cheerfullness = new Characteristic(30, 30);
         var satiety = new Characteristic(30, 30);
         var health = new Characteristic(50, 50);
-        characteristics = new CharacteristicsInfo(cheerfullness, satiety, health);
+        var experience = new Characteristic(0, 50);
+        characteristics = new CharacteristicsInfo(cheerfullness, satiety, health, experience);
         inventory = new SimpleInventory();
         location = HeroElement.fromPoint(new Point(MAP_WIDTH / 2 - HERO_WIDTH / 2, MAP_HEIGHT / 2 - HERO_HEIGHT / 2));
     }
@@ -119,5 +120,15 @@ public class SimpleHeroLogic implements HeroLogic {
     @Override
     public void setLocation(@NotNull MapElement location) {
         this.location = location;
+    }
+
+    @Override
+    public void addExperience(int experience) {
+        characteristics.experience.current += experience;
+        if (characteristics.experience.current > characteristics.experience.full) {
+            characteristics.experience.current -= characteristics.experience.full;
+            characteristics.cheerfullness.full += 5;
+            characteristics.satiety.full += 5;
+        }
     }
 }

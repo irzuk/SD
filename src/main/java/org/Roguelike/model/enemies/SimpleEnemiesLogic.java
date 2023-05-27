@@ -1,21 +1,22 @@
 package org.Roguelike.model.enemies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
+import org.Roguelike.collections.enemies.ConfusedEnemy;
+import org.Roguelike.collections.enemies.Enemy;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.Roguelike.generators.enemies.EnemiesGenerator;
-import org.Roguelike.model.hero.SimpleHeroLogic;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleEnemiesLogic implements EnemiesLogic {
-    private List<Enemy> enemies;
+    private List<@NotNull Enemy> enemies;
 
-    public SimpleEnemiesLogic(List<Enemy> enemies_) {
-        enemies = enemies_;
+    public SimpleEnemiesLogic(@NotNull Map map) {
+        processMap(map);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class SimpleEnemiesLogic implements EnemiesLogic {
             if (enemy.getEnemyLocation().intersects(heroLocation.getBounds2D())) {
                 boolean confused = enemy.fight(heroCharacteristics);
                 if (enemy.isDead()) {
-                    result += enemy.experience;
+                    result += enemy.getExperience();
                 }
                 else if (confused) {
                     enemies.set(i, new ConfusedEnemy(enemy));
@@ -66,7 +67,7 @@ public class SimpleEnemiesLogic implements EnemiesLogic {
     }
 
     @Override
-    public void processMap(@NotNull Map map) {
+    public final void processMap(@NotNull Map map) {
         EnemiesGenerator g = new EnemiesGenerator();
         enemies = g.generateEnemies(map);
     }

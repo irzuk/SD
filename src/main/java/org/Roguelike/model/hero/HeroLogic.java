@@ -16,4 +16,5 @@ public interface HeroLogic {
     @NotNull MapElement getLocation();
     @NotNull CharacteristicsInfo getCharacteristics();
     void setLocation(@NotNull MapElement location);
+    void addExperience(int experience);
 }

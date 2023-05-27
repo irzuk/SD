@@ -11,9 +11,9 @@ import org.Roguelike.generators.items.ItemGenerator;
 import org.Roguelike.generators.map.MapGenerator;
 import org.Roguelike.generators.map.RoomGenerator;
 import org.Roguelike.generators.map.SideWithDoor;
+import org.Roguelike.collections.enemies.Enemy;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -66,6 +66,13 @@ public class RoomLogic implements MapLogic {
         chestsLock.unlock();
         var newHeroLocation = location.move(vector);
         return new MapLogicResult(newHeroLocation, item);
+    }
+
+    @Override
+    public @NotNull List<@NotNull Vector> processEnemiesDirections(@NotNull List<@NotNull Enemy> enemies,
+                                                                   @NotNull List<@NotNull Vector> directions) {
+
+        return null;
     }
 
     @Override

@@ -1,19 +1,20 @@
 package org.Roguelike.generators.enemies;
 
 import org.Roguelike.collections.characteristics.Characteristic;
+import org.Roguelike.collections.enemies.Enemy;
+import org.Roguelike.model.enemies.stratagies.BehaviorStrategy;
+import org.Roguelike.model.enemies.stratagies.NightstandStrategy;
+import org.Roguelike.model.enemies.stratagies.SchoolkidStrategy;
+import org.Roguelike.model.enemies.stratagies.TeacherStrategy;
 import org.Roguelike.collections.geometry.Point;
 import org.Roguelike.collections.map.Map;
 import org.Roguelike.collections.map.MapElementsParameters;
-import org.Roguelike.collections.map.elements.ChestElement;
 import org.Roguelike.collections.map.elements.MapElement;
-import org.Roguelike.model.enemies.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 
 /*
  * Класс для генерации врагов на карте
