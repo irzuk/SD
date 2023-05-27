@@ -5,6 +5,8 @@ import org.Roguelike.collections.GameFrame;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.items.Item;
 import org.Roguelike.collections.items.Thing;
+import org.Roguelike.model.enemies.EnemiesLogic;
+import org.Roguelike.model.enemies.SimpleEnemiesLogic;
 import org.Roguelike.model.hero.HeroLogic;
 import org.Roguelike.model.hero.SimpleHeroLogic;
 import org.Roguelike.model.map.MapLogic;
@@ -24,6 +26,7 @@ public class GameModel implements Runnable {
     private final @NotNull Drawer drawer;
     private final @NotNull MapLogic mapLogic = new RoomLogic();
     private final @NotNull HeroLogic heroLogic = new SimpleHeroLogic();
+    private final @NotNull EnemiesLogic enemiesLogic = new SimpleEnemiesLogic(mapLogic.getMap());
     private final @NotNull AtomicBoolean needStop = new AtomicBoolean(false);
     private final @NotNull Queue<@NotNull KeyEvent> queueKeyEvents = new ConcurrentLinkedQueue<>();
     private static final @NotNull Map<@NotNull KeyEvent, @NotNull Integer> eventToInd;
@@ -49,25 +52,36 @@ public class GameModel implements Runnable {
     @Override
     public void run() {
         while (!needStop.get()) {
+            // process Hero
             Item recievedItem = null;
             var keyEvent = queueKeyEvents.poll();
             if (keyEvent != null) {
                 recievedItem = processKeyEvent(keyEvent);
             }
             boolean stop = needStop.get() || heroLogic.decreaseCharacteristics();
-            var gameFrame = new GameFrame.GameFrameBuilder()
+            boolean isMapChanged = mapLogic.pollMapChanged();
+
+            // process Enemies
+            if (isMapChanged) {
+                enemiesLogic.processMap(mapLogic.getMap());
+            }
+            var enemiesDirections = enemiesLogic.calculateDirections(heroLogic.getLocation());
+            enemiesDirections = mapLogic.processEnemiesDirections(enemiesLogic.getEnemies(), enemiesDirections);
+            int experience = enemiesLogic.processMovement(enemiesDirections,
+                    heroLogic.getLocation(), heroLogic.getCharacteristics());
+            heroLogic.addExperience(experience);
+
+            // generate Frame
+            var frame = new GameFrame.GameFrameBuilder()
                     .setMap(mapLogic.getMap())
                     .setThings(heroLogic.getAvailableItems().stream().map(item -> (Thing) item).toList())
                     .setHeroLocation(heroLogic.getLocation())
                     .setCharacteristicsInfo(heroLogic.getCharacteristics())
                     .setReceivedItem(recievedItem)
+                    .setEnemiesLocations(enemiesLogic.getEnemies())
                     .setStop(stop)
-                    .setMapChanged(mapLogic.pollMapChanged()).build();
-            try {
-                drawer.drawFrame(gameFrame);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                    .setMapChanged(isMapChanged).build();
+            draw(frame);
         }
         var frame = new GameFrame.GameFrameBuilder().setStop(true).build();
         draw(frame);

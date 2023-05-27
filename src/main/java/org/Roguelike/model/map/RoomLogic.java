@@ -13,6 +13,7 @@ import org.Roguelike.generators.map.RoomGenerator;
 import org.Roguelike.generators.map.SideWithDoor;
 import org.Roguelike.collections.enemies.Enemy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -71,8 +72,18 @@ public class RoomLogic implements MapLogic {
     @Override
     public @NotNull List<@NotNull Vector> processEnemiesDirections(@NotNull List<@NotNull Enemy> enemies,
                                                                    @NotNull List<@NotNull Vector> directions) {
-
-        return null;
+        assert enemies.size() == directions.size();
+        for (int i = 0; i < enemies.size(); ++i) {
+            var enemy = enemies.get(i);
+            if (!enemy.isDead()) {
+                var vector = directions.get(i);
+                vector = fixVector(vector, enemy.getEnemyLocation());
+                if (vector != null) {
+                    directions.set(i, vector);
+                }
+            }
+        }
+        return directions;
     }
 
     @Override
@@ -126,5 +137,22 @@ public class RoomLogic implements MapLogic {
         }
         var heroLocation = HeroElement.fromPoint(targetDoor.leftBot());
         return heroLocation.move(targetVector);
+    }
+
+    private @Nullable Vector fixVector(Vector vector, MapElement enemyLocation) {
+        for (var line : map.roomLines()) {
+            if (!vector.intersectsLine(enemyLocation, line)) {
+                continue;
+            }
+            int x = 0;
+            int y = 0;
+            if (vector.isVertical() && line.isHorizontal()) {
+                y = line.first().y();
+            } else if (vector.isHorizontal() && line.isVertical()) {
+                x = line.first().x();
+            }
+            return new Vector(x, y);
+        }
+        return null;
     }
 }

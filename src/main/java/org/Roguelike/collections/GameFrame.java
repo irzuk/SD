@@ -121,8 +121,9 @@ public class GameFrame {
             return this;
         }
 
-        public void setEnemies(@NotNull List<@NotNull Enemy> enemies) {
+        public GameFrameBuilder setEnemiesLocations(@NotNull List<@NotNull Enemy> enemies) {
             this.enemies = enemies;
+            return this;
         }
 
         public GameFrame build() {
