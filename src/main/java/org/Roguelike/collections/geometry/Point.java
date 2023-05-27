@@ -17,6 +17,24 @@ public record Point(int x, int y) {
     }
 
     @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Point)) {
+            return false;
+        }
+
+        // typecast o to Complex so that we can compare data members
+        var c = (Point) o;
+
+        // Compare the data members and return accordingly
+        return c.x == x && c.y == y;
+    }
+
+    @Override
     public @NotNull String toString() {
         return String.format("(%d, %d)", x, y);
     }

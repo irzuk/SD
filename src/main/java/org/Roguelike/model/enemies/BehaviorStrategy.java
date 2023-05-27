@@ -6,19 +6,21 @@ import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
 /*
- * TODO: Миша
  * Интерфейс описывает стратегии поведения врагов.
  */
 public interface BehaviorStrategy {
+    public static int INIT_CHEER = 30;
+    public static int INIT_SATIETY = 30;
     /*
      * Arguments:
      *  heroLocation - позиция героя в текущий момент.
+     *  curLocation - позиция врага в текущий момент.
      * Return:
      *  Vector - направление, в котором должен двигаться враг.
      * Description:
      *  Метод вычисляет направление движения врага, учитывая при этом положение героя на карте.
      */
-    @NotNull Vector calculateDirection(@NotNull MapElement heroLocation);
+    @NotNull Vector calculateDirection(@NotNull MapElement heroLocation, @NotNull MapElement enemyLocation);
 
     /*
      * Arguments:

@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
  * Вызывает различные стратегии, которые должен получить извне.
  */
 public class Enemy {
-    private final int experience;
-    private final Characteristic health;
-    private final MapElement enemyLocation;
-    private final BehaviorStrategy strategy;
+    protected final int experience;
+    protected final Characteristic health;
+    protected   MapElement enemyLocation;
+    protected final BehaviorStrategy strategy;
 
     public Enemy() {
         this.experience = 0;
@@ -37,7 +37,7 @@ public class Enemy {
      *  false, иначе
      */
     public boolean isDead() {
-        return false;
+        return health.current < 0;
     }
 
     public @NotNull MapElement getEnemyLocation() {
@@ -51,7 +51,7 @@ public class Enemy {
      *  Vector - направление в котором будет двигаться враг.
      */
     public @NotNull Vector findDirection(MapElement heroLocation) {
-        return null;
+        return strategy.calculateDirection(heroLocation, enemyLocation);
     }
 
     /*
@@ -59,7 +59,7 @@ public class Enemy {
      *  direction - направление в котором нужно передвинуть положение врага.
      */
     public void move(Vector direction) {
-
+        enemyLocation = enemyLocation.move(direction);
     }
 
     /*
@@ -69,6 +69,8 @@ public class Enemy {
      *  boolean - был ли враг сконфужен.
      */
     public boolean fight(CharacteristicsInfo heroCharacteristics) {
-        return false;
+        var res = strategy.fight(heroCharacteristics);
+        health.current -= res;
+        return strategy.tryConfuse();
     }
 }
