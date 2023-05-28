@@ -147,9 +147,11 @@ public class RoomLogic implements MapLogic {
             int x = 0;
             int y = 0;
             if (vector.isVertical() && line.isHorizontal()) {
-                y = line.first().y();
+                y = vector.goesDown() ? line.first().y() - enemyLocation.leftBot().y()
+                        : line.first().y() - enemyLocation.leftTop().y();
             } else if (vector.isHorizontal() && line.isVertical()) {
-                x = line.first().x();
+                x = vector.goesLeft() ? line.first().x() - enemyLocation.leftBot().x()
+                        : line.first().x() - enemyLocation.rightTop().x();
             }
             return new Vector(x, y);
         }
