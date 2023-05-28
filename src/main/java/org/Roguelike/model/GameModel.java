@@ -14,36 +14,54 @@ import org.Roguelike.model.map.RoomLogic;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.Roguelike.collections.map.MapElementsParameters.CELL_BORDER;
 
 public class GameModel implements Runnable {
+    private interface Task {
+        @Nullable Item process();
+    }
+
+    public final class MoveTask implements Task {
+        @NotNull
+        private final Vector vector;
+
+        public MoveTask(@NotNull Vector vector) {
+            this.vector = vector;
+        }
+
+        @Override
+        public @Nullable Item process() {
+            var location = heroLogic.getLocation();
+            var res = mapLogic.processHeroLocation(location, vector);
+            heroLogic.setLocation(res.location());
+            heroLogic.processItem(res.item());
+            return res.item();
+        }
+    }
+
+    public final class SetItemTask implements Task {
+        private final int ind;
+
+        public SetItemTask(int ind) {
+            this.ind = ind;
+        }
+
+        @Override
+        public @Nullable Item process() {
+            heroLogic.setItem(ind);
+            return null;
+        }
+    }
+
     private final @NotNull Drawer drawer;
     private final @NotNull MapLogic mapLogic = new RoomLogic();
     private final @NotNull HeroLogic heroLogic = new SimpleHeroLogic();
     private final @NotNull EnemiesLogic enemiesLogic = new SimpleEnemiesLogic(mapLogic.getMap());
     private final @NotNull AtomicBoolean needStop = new AtomicBoolean(false);
-    private final @NotNull Queue<@NotNull KeyEvent> queueKeyEvents = new ConcurrentLinkedQueue<>();
-    private static final @NotNull Map<@NotNull KeyEvent, @NotNull Integer> eventToInd;
-
-    static {
-        eventToInd = new HashMap<>();
-        eventToInd.put(KeyEvent.USE_THING_1, 0);
-        eventToInd.put(KeyEvent.USE_THING_2, 1);
-        eventToInd.put(KeyEvent.USE_THING_3, 2);
-        eventToInd.put(KeyEvent.USE_THING_4, 3);
-        eventToInd.put(KeyEvent.USE_THING_5, 4);
-        eventToInd.put(KeyEvent.USE_THING_6, 5);
-        eventToInd.put(KeyEvent.USE_THING_7, 6);
-        eventToInd.put(KeyEvent.USE_THING_8, 7);
-        eventToInd.put(KeyEvent.USE_THING_9, 8);
-        eventToInd.put(KeyEvent.USE_THING_10, 9);
-    }
+    private final @NotNull Queue<@NotNull Task> queueKeyEvents = new ConcurrentLinkedQueue<>();
 
     public GameModel(@NotNull Drawer drawer) {
         this.drawer = drawer;
@@ -54,9 +72,9 @@ public class GameModel implements Runnable {
         while (!needStop.get()) {
             // process Hero
             Item recievedItem = null;
-            var keyEvent = queueKeyEvents.poll();
-            if (keyEvent != null) {
-                recievedItem = processKeyEvent(keyEvent);
+            var task = queueKeyEvents.poll();
+            if (task != null) {
+                recievedItem = task.process();
             }
             boolean stop = needStop.get() || heroLogic.decreaseCharacteristics();
             boolean isMapChanged = mapLogic.pollMapChanged();
@@ -87,8 +105,8 @@ public class GameModel implements Runnable {
         draw(frame);
     }
 
-    public void setKeyEvent(@NotNull KeyEvent keyEvent) {
-        queueKeyEvents.add(keyEvent);
+    public void addTask(@NotNull Task task) {
+        queueKeyEvents.add(task);
     }
 
     public void stop() {
@@ -101,28 +119,5 @@ public class GameModel implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    private @Nullable Item processKeyEvent(KeyEvent keyEvent) {
-        return switch (keyEvent) {
-            case GO_UP -> processKeyWithVector(Vector.vectorDown(CELL_BORDER));
-            case GO_DOWN -> processKeyWithVector(Vector.vectorUp(CELL_BORDER));
-            case GO_LEFT -> processKeyWithVector(Vector.vectorLeft(CELL_BORDER));
-            case GO_RIGHT -> processKeyWithVector(Vector.vectorRight(CELL_BORDER));
-            default -> setItemAndReturn(keyEvent);
-        };
-    }
-
-    private @Nullable Item processKeyWithVector(@NotNull Vector vector) {
-        var location = heroLogic.getLocation();
-        var res = mapLogic.processHeroLocation(location, vector);
-        heroLogic.setLocation(res.location());
-        heroLogic.processItem(res.item());
-        return res.item();
-    }
-
-    private @Nullable Item setItemAndReturn(@NotNull KeyEvent event) {
-        heroLogic.setItem(eventToInd.get(event));
-        return null;
     }
 }
