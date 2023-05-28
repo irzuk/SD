@@ -36,7 +36,7 @@ public class RoomGenerator implements MapGenerator {
 
         // Chests
 
-        int prob_perc = 5;
+        int prob_perc = 1;
         LinkedList<MapElement> chests = new LinkedList<>();
         for (int row = MapElementsParameters.CHEST_HEIGHT;
              row + MapElementsParameters.CHEST_HEIGHT < MapElementsParameters.MAP_HEIGHT;

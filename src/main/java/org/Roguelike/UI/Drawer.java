@@ -46,11 +46,11 @@ public class Drawer extends Frame {
 
         setSize(BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER + 100, BORDER + MAP_Y + MAP_H + BORDER + 100);
         setVisible(true);
-
     }
 
     public void drawFrame(GameFrame gameFrame) throws InterruptedException {
 
+        //this.gameFrame = gameFrame;
         this.gameFrame = new GameFrame(gameFrame);
 
         if (this.gameFrame.isStop()) {
@@ -61,42 +61,37 @@ public class Drawer extends Frame {
             return;
         }
 
-        map.repaint();
-        characteristics.repaint();
+        if(this.gameFrame.getInfo().experience.current == this.gameFrame.getInfo().experience.full) {
+            Dialog d = new Dialog(this, "Level passed");
+            d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER) / 3, (BORDER + MAP_Y + MAP_H + BORDER) / 3, 300, 50);
+            d.setVisible(true);
+            Thread.sleep(5000);
+            return;
+        }
+
+        characteristics.update(characteristics.getGraphics());
+        if (gameFrame.isMapChanged()) {
+            map.repaint();
+        } else {
+            map.repaint(gameFrame.getHeroLocation().leftTop().x() - 20, gameFrame.getHeroLocation().leftTop().y() - 20, 40, 40);
+            for (var x : gameFrame.getEnemies()) {
+                map.repaint(x.getEnemyLocation().leftTop().x() - 10, x.getEnemyLocation().leftTop().y() - 10, 20, 20);
+            }
+        }
     }
 
     private class Map extends Canvas {
-        private MapElement prevHeroLocation = MapElement.fromPoint(new Point(0, 0));
         public void update(Graphics g) {
-            if (gameFrame == null || gameFrame.isStop()) {
-                return;
-            }
-            MapElement h = gameFrame.getHeroLocation();
-            if(gameFrame.isMapChanged()) {
-                System.out.println(gameFrame.isMapChanged());
-                g.clearRect(0,0, MAP_W, MAP_H);
-            }
-            // TODO: Ira, please, check this code. I tried remove hero trace
-            if (!h.toString().equals(prevHeroLocation.toString())) {
-                g.clearRect(prevHeroLocation.leftTop().x() - BORDER,
-                        prevHeroLocation.leftTop().y() - BORDER,
-                        MapElementsParameters.HERO_WIDTH + 2 * BORDER,
-                        MapElementsParameters.HERO_HEIGHT + 2 * BORDER);
-                g.clearRect(h.leftTop().x() - BORDER,
-                        h.leftTop().y() - BORDER,
-                        MapElementsParameters.HERO_WIDTH + 2 * BORDER,
-                        MapElementsParameters.HERO_HEIGHT + 2 * BORDER);
-                prevHeroLocation = h;
-            }
             paint(g);
         }
 
         @Override
         public void paint(Graphics g) {
+            super.paint(g);
             if (gameFrame == null || gameFrame.isStop()) {
                 return;
             }
-            g.setColor(Color.RED);
+            g.setColor(Color.green);
             g.drawPolygon(gameFrame.getHeroLocation());
 
             g.setColor(Color.BLACK);
@@ -105,6 +100,10 @@ public class Drawer extends Frame {
             }
             for (var x : gameFrame.getMap().doors()) {
                 g.drawPolygon(x);
+            }
+            g.setColor(Color.RED);
+            for (var x : gameFrame.getEnemies()) {
+                g.drawPolygon(x.getEnemyLocation());
             }
 //            for (var x : gameFrame.getMap().roomLines()) {
 //                g.drawLine(x.first().x(), x.first().y(), x.second().x(), x.second().y());
@@ -122,8 +121,14 @@ public class Drawer extends Frame {
             currY += STRING_H;
         }
 
+        public void update(Graphics g) {
+            paint(g);
+        }
+
         @Override
         public void paint(Graphics g) {
+            super.paint(g);
+
             if (gameFrame == null || gameFrame.isStop()) {
                 return;
             }
@@ -133,9 +138,10 @@ public class Drawer extends Frame {
             addString(g, "Health: " + gameFrame.getInfo().health.current + " / " + gameFrame.getInfo().health.full);
             addString(g, "Cheerfulness: " + gameFrame.getInfo().cheerfullness.current + " / " + gameFrame.getInfo().cheerfullness.full);
             addString(g, "Satisfy: " + gameFrame.getInfo().satiety.current + " / " + gameFrame.getInfo().satiety.full);
+            addString(g, "Experience: " + gameFrame.getInfo().experience.current + " / " + gameFrame.getInfo().experience.full);
 
             addString(g, "_________");
-            addString(g, "Items");
+            addString(g, "Items:");
 
             for (var item : gameFrame.getItems()) {
                 addString(g, item.getDescription());
@@ -144,15 +150,12 @@ public class Drawer extends Frame {
             if (item != null) {
                 addString(g, "Received: " + item.getDescription());
             }
-            if(gameFrame.isMapChanged()) {
+            if (gameFrame.isMapChanged()) {
                 addString(g, "Welcome to new room!");
             }
             //TODO: always null/false at this point of execution
             if (gameFrame.getReceivedItem() != null) {
                 System.out.println(gameFrame.getReceivedItem().getDescription());
-            }
-            if (gameFrame.isMapChanged()) {
-                System.out.println(gameFrame.isMapChanged());
             }
         }
     }

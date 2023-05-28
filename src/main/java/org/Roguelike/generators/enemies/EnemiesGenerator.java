@@ -31,7 +31,7 @@ public class EnemiesGenerator {
     public @NotNull List<@NotNull Enemy> generateEnemies(@NotNull Map map) {
 
         List<Enemy> enemyList = new ArrayList<>();
-        var enemy_percent = 2;
+        var enemy_percent = 1;
         for (int row = MapElementsParameters.CHEST_HEIGHT;
              row + MapElementsParameters.CHEST_HEIGHT < MapElementsParameters.MAP_HEIGHT;
              row += MapElementsParameters.CHEST_HEIGHT) {
