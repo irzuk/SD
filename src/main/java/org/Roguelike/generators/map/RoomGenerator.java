@@ -46,7 +46,7 @@ public class RoomGenerator implements MapGenerator {
                  col += MapElementsParameters.CHEST_WIDTH) {
                 var tmp = ThreadLocalRandom.current().nextInt(0, 100);
                 if (tmp < prob_perc) {
-                    chests.add(ChestElement.fromPoint(new Point(row, col)));
+                    chests.add(ChestElement.fromPoint(new Point(col, row)));
                 }
             }
         }

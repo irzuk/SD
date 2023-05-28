@@ -23,7 +23,7 @@ public interface EnemiesLogic {
 
     /*
      * Return:
-     *  список врагов.
+     *  список живых врагов.
      */
     @NotNull List<@NotNull Enemy> getEnemies();
 

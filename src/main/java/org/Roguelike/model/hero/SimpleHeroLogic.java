@@ -75,8 +75,9 @@ public class SimpleHeroLogic implements HeroLogic {
 
     @Override
     public boolean decreaseCharacteristics() {
+        var UPDATE_CHAR_TIMEOUT_MS = 1500;
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastDecreasing >= 1000) {
+        if (currentTime - lastDecreasing >= UPDATE_CHAR_TIMEOUT_MS) {
             boolean stop = !processDecreasing();
             lastDecreasing = currentTime;
             return stop;

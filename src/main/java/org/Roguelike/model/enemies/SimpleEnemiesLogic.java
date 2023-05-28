@@ -30,7 +30,7 @@ public class SimpleEnemiesLogic implements EnemiesLogic {
 
     @Override
     public @NotNull List<@NotNull Enemy> getEnemies() {
-        return enemies;
+        return enemies; //.stream().filter(enemy -> !enemy.isDead()).collect(Collectors.toList());
     }
     /*
      * Arguments:
@@ -54,8 +54,11 @@ public class SimpleEnemiesLogic implements EnemiesLogic {
         for (int i = 0; i < enemies.size(); i++) {
             var enemy = enemies.get(i);
             if (enemy.getEnemyLocation().intersects(heroLocation.getBounds2D())) {
+                System.out.println("Fight!");
                 boolean confused = enemy.fight(heroCharacteristics);
                 if (enemy.isDead()) {
+                    enemies.remove(i);
+                    i--;
                     result += enemy.getExperience();
                 }
                 else if (confused) {

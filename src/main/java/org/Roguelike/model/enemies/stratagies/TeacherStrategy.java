@@ -19,27 +19,32 @@ public class TeacherStrategy implements BehaviorStrategy {
     }
     @Override
     public @NotNull Vector calculateDirection(@NotNull MapElement heroLocation, @NotNull MapElement enemyLocation) {
-        var x = Math.abs(heroLocation.leftTop().x() - enemyLocation.leftBot().x());
-        var y = Math.abs(heroLocation.leftTop().y() - enemyLocation.leftBot().y());
+        int x = (int) Math.signum(heroLocation.leftTop().x() - enemyLocation.leftBot().x());
+        int y = (int) Math.signum(heroLocation.leftTop().y() - enemyLocation.leftBot().y());
         if (x == 0) {
-            return new Vector(0, y * MapElementsParameters.CELL_BORDER);
+            return new Vector(0, y);
         }
         if (y == 0) {
-            return new Vector(x * MapElementsParameters.CELL_BORDER, 0);
+            return new Vector(x, 0);
         }
         if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
-            return new Vector(0, y * MapElementsParameters.CELL_BORDER);
+            return new Vector(0, y);
         }
-        return new Vector(x * MapElementsParameters.CELL_BORDER, 0);
+        System.out.printf("Hero  location: (%d, %d)\n", heroLocation.leftBot().x(), heroLocation.leftBot().y());
+        System.out.printf("Enemy location: (%d, %d)\n", enemyLocation.leftBot().x(), enemyLocation.leftBot().y());
+        return new Vector(x, 0);
     }
 
     @Override
     public int fight(@NotNull CharacteristicsInfo heroCharacteristics) {
-        if (ChronoUnit.MILLIS.between(LocalDateTime.now(), lastFight) < DUR_MS) {
+        if (ChronoUnit.MILLIS.between(lastFight, LocalDateTime.now()) < DUR_MS) {
+            System.out.println("Timing fallback");
             return 0;
         }
         lastFight = LocalDateTime.now();
-        var res = (heroCharacteristics.cheerfullness.current - INIT_CHEER) + (heroCharacteristics.satiety.current - INIT_SATIETY);
+
+        var res = heroCharacteristics.cheerfullness.current / 3
+                + heroCharacteristics.satiety.current / 3;
         var DAMAGE_CHEER = 10;
         var DAMAGE_SATIETY = 10;
         heroCharacteristics.decreaseCheerfullness(DAMAGE_CHEER);
@@ -49,7 +54,7 @@ public class TeacherStrategy implements BehaviorStrategy {
 
     @Override
     public boolean tryConfuse() {
-        var CONFUSE_PROB = 15;
+        var CONFUSE_PROB = 5;
         return ThreadLocalRandom.current().nextInt(0, 100) < CONFUSE_PROB;
     }
 }

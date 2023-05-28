@@ -18,7 +18,7 @@ public class ConfusedEnemy extends Enemy {
     private final Enemy entryEnemy;
     private LocalDateTime confuseTime;
 
-    private static final int CONFUSE_TIME_MS = 100;
+    private static final int CONFUSE_TIME_MS = 3000;
     public ConfusedEnemy(@NotNull Enemy entryEnemy) {
         this.entryEnemy = entryEnemy;
         confuseTime = LocalDateTime.now();
@@ -34,7 +34,7 @@ public class ConfusedEnemy extends Enemy {
      */
     @Override
     public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
-        if (ChronoUnit.MILLIS.between(LocalDateTime.now(), confuseTime) >= CONFUSE_TIME_MS) {
+        if (ChronoUnit.MILLIS.between(confuseTime, LocalDateTime.now()) >= CONFUSE_TIME_MS) {
             return entryEnemy.findDirection(heroLocation);
         }
 
