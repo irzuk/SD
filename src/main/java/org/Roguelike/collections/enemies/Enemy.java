@@ -15,21 +15,27 @@ public class Enemy {
     protected final int experience;
     protected final Characteristic health;
     protected MapElement enemyLocation;
-    protected final BehaviorStrategy strategy;
+    protected BehaviorStrategy strategy;
+    protected EnemyState state;
 
     public Enemy() {
         this.experience = 0;
         this.health = null;
         this.enemyLocation = null;
         this.strategy = null;
+        state = null;
     }
 
-
-    public Enemy(int experience, @NotNull Characteristic health, @NotNull MapElement enemyLocation, @NotNull BehaviorStrategy strategy) {
+    public Enemy(int experience,
+                 @NotNull Characteristic health,
+                 @NotNull MapElement enemyLocation,
+                 @NotNull BehaviorStrategy strategy,
+                 @NotNull EnemyState state) {
         this.experience = experience;
         this.health = health;
         this.enemyLocation = enemyLocation;
         this.strategy = strategy;
+        this.state = state;
     }
 
     /*
@@ -70,6 +76,8 @@ public class Enemy {
      *  CharacteristicsInfo - характеристики героя, которые должны измениться.
      * Return:
      *  boolean - был ли враг сконфужен.
+     * Description:
+     *  Имитирует драку между врагом и героем. Отвечает за изменение состояния врага (state).
      */
     public boolean fight(CharacteristicsInfo heroCharacteristics) {
         assert strategy != null;
