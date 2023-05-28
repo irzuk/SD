@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Drawer extends Frame {
 
@@ -26,8 +28,14 @@ public class Drawer extends Frame {
 
     private static final int PANEL_X = MAP_W + MAP_X + BORDER;
     private static final int PANEL_Y = BORDER;
-    private static final int PANEL_H = MAP_H;
+    private static final int PANEL_H = MAP_H + 30;
     private static final int PANEL_W = 200;
+
+    private LocalDateTime newRoomTimer = LocalDateTime.now();
+    private LocalDateTime newItemTimer = LocalDateTime.now();
+    private LocalDateTime experienceTimer = LocalDateTime.now();
+
+    private String recievedItem;
 
     public Drawer() {
         setLayout(new FlowLayout());
@@ -50,19 +58,10 @@ public class Drawer extends Frame {
 
     public void drawFrame(GameFrame gameFrame) throws InterruptedException {
 
-        //this.gameFrame = gameFrame;
         this.gameFrame = new GameFrame(gameFrame);
 
         if (this.gameFrame.isStop()) {
             Dialog d = new Dialog(this, "Game over");
-            d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER) / 3, (BORDER + MAP_Y + MAP_H + BORDER) / 3, 300, 50);
-            d.setVisible(true);
-            Thread.sleep(5000);
-            return;
-        }
-
-        if(this.gameFrame.getInfo().experience.current == this.gameFrame.getInfo().experience.full) {
-            Dialog d = new Dialog(this, "Level passed");
             d.setBounds((BORDER + MAP_X + MAP_W + BORDER + PANEL_W + BORDER) / 3, (BORDER + MAP_Y + MAP_H + BORDER) / 3, 300, 50);
             d.setVisible(true);
             Thread.sleep(5000);
@@ -98,6 +97,11 @@ public class Drawer extends Frame {
             for (var x : gameFrame.getMap().chests()) {
                 g.drawPolygon(x);
             }
+
+            for (var x : gameFrame.getMap().roomLines()) {
+                g.drawLine(x.first().x(), x.first().y(), x.second().x(), x.second().y());
+            }
+            g.setColor(Color.WHITE);
             for (var x : gameFrame.getMap().doors()) {
                 g.drawPolygon(x);
             }
@@ -105,9 +109,6 @@ public class Drawer extends Frame {
             for (var x : gameFrame.getEnemies()) {
                 g.drawPolygon(x.getEnemyLocation());
             }
-//            for (var x : gameFrame.getMap().roomLines()) {
-//                g.drawLine(x.first().x(), x.first().y(), x.second().x(), x.second().y());
-//            }
         }
     }
 
@@ -147,15 +148,32 @@ public class Drawer extends Frame {
                 addString(g, item.getDescription());
             }
             var item = gameFrame.getReceivedItem();
+
             if (item != null) {
-                addString(g, "Received: " + item.getDescription());
+                newItemTimer = LocalDateTime.now();
+                recievedItem = item.getDescription();
             }
+            addString(g, "_________");
+            if (ChronoUnit.MILLIS.between(newItemTimer, LocalDateTime.now()) < 3000) {
+                addString(g, "Received: " + recievedItem);
+            }
+
             if (gameFrame.isMapChanged()) {
+                newRoomTimer = LocalDateTime.now();
+            }
+            if (ChronoUnit.MILLIS.between(newRoomTimer, LocalDateTime.now()) < 3000) {
                 addString(g, "Welcome to new room!");
             }
-            //TODO: always null/false at this point of execution
-            if (gameFrame.getReceivedItem() != null) {
-                System.out.println(gameFrame.getReceivedItem().getDescription());
+
+            if(gameFrame.getInfo().experience.current == gameFrame.getInfo().experience.full) {
+                experienceTimer = LocalDateTime.now();
+            }
+            if(ChronoUnit.MILLIS.between(experienceTimer, LocalDateTime.now()) < 3000) {
+                addString(g, "Level passed!");
+            }
+
+            if(gameFrame.getEnemies().isEmpty()) {
+                addString(g, "All enemies are dead, go to the other room!");
             }
         }
     }

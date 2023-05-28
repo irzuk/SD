@@ -55,7 +55,7 @@ public class SchoolkidStrategy implements BehaviorStrategy {
 
     @Override
     public boolean tryConfuse() {
-        var CONFUSE_PROB = 5;
+        var CONFUSE_PROB = 10;
         return ThreadLocalRandom.current().nextInt(0, 100) < CONFUSE_PROB;
     }
 

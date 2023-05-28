@@ -41,7 +41,7 @@ public class NightstandStrategy implements BehaviorStrategy {
 
     @Override
     public boolean tryConfuse() {
-        var CONFUSE_PROB = 25;
+        var CONFUSE_PROB = 7;
         return ThreadLocalRandom.current().nextInt(0, 100) < CONFUSE_PROB;
     }
 
