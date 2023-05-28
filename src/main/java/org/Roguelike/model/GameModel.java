@@ -56,6 +56,8 @@ public class GameModel implements Runnable {
         }
     }
 
+    private static final int DELAY = 30;
+
     private final @NotNull Drawer drawer;
     private final @NotNull MapLogic mapLogic = new RoomLogic();
     private final @NotNull HeroLogic heroLogic = new SimpleHeroLogic();
@@ -100,6 +102,13 @@ public class GameModel implements Runnable {
                     .setStop(stop)
                     .setMapChanged(isMapChanged).build();
             draw(frame);
+
+            // Spin Lock
+            long delayTime = System.currentTimeMillis();
+            long curTime = delayTime;
+            while (curTime - delayTime < DELAY) {
+                curTime = System.currentTimeMillis();
+            }
         }
         var frame = new GameFrame.GameFrameBuilder().setStop(true).build();
         draw(frame);
