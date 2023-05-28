@@ -33,6 +33,9 @@ public class EnemiesGenerator {
 
         List<Enemy> enemyList = new ArrayList<>();
         var enemy_percent = 1;
+        var fstCnt = 0;
+        var sndCnt = 0;
+        var thdCnt = 0;
         for (int row = MapElementsParameters.CHEST_HEIGHT;
              row + MapElementsParameters.CHEST_HEIGHT < MapElementsParameters.MAP_HEIGHT;
              row += MapElementsParameters.CHEST_HEIGHT) {
@@ -53,6 +56,8 @@ public class EnemiesGenerator {
                     continue;
                 }
 
+
+
                 if (tmp < enemy_percent) {
                     var type = ThreadLocalRandom.current().nextInt(0, 3);
                     BehaviorStrategy strat;
@@ -64,16 +69,22 @@ public class EnemiesGenerator {
                         state = EnemyState.MUTABLE_AGGRESSIVE;
                         exp = 15;
                         health = 35;
+                        fstCnt += 1;
+                        if (fstCnt > 3) continue;
                     } else if (type == 1) {
                         state = EnemyState.IMMUTABLE;
                         strat = new NightstandStrategy();
                         exp = 10;
                         health = 25;
+                        sndCnt += 1;
+                        if (sndCnt > 3) continue;
                     } else {
                         state = EnemyState.IMMUTABLE;
                         strat = new SchoolkidStrategy();
                         exp = 5;
                         health = 30;
+                        thdCnt += 1;
+                        if (thdCnt > 3) continue;
                     }
 
                     enemyList.add(new Enemy(exp, new Characteristic(health, health), MapElement.fromPoint(new Point(row, col)), strat, state));
