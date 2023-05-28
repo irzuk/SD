@@ -1,6 +1,7 @@
 package org.Roguelike.model.enemies.stratagies;
 
 import org.Roguelike.collections.characteristics.CharacteristicsInfo;
+import org.Roguelike.collections.enemies.EnemyState;
 import org.Roguelike.collections.geometry.Vector;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
@@ -43,4 +44,5 @@ public interface BehaviorStrategy {
      *  Метод пытается вызвать конфузию у врага. Вероятность конфузии зависит от стратегии врага.
      */
     boolean tryConfuse();
+
 }

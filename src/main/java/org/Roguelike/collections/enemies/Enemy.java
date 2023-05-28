@@ -60,7 +60,11 @@ public class Enemy {
      */
     public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
         assert strategy != null;
-        return strategy.calculateDirection(heroLocation, enemyLocation);
+        var dir = strategy.calculateDirection(heroLocation, enemyLocation);
+        if (state == EnemyState.MUTABLE_SNEAKY) {
+            return new Vector(-dir.getX(), -dir.getY());
+        }
+        return dir;
     }
 
     /*
@@ -68,7 +72,17 @@ public class Enemy {
      *  direction - направление в котором нужно передвинуть положение врага.
      */
     public void move(Vector direction) {
+        var STATE_LIMIT = 15;
         enemyLocation = enemyLocation.move(direction);
+        if (state != EnemyState.IMMUTABLE) {
+            assert health != null;
+            if (health.current <= STATE_LIMIT) {
+                state = EnemyState.MUTABLE_SNEAKY;
+            }
+            else {
+                state = EnemyState.MUTABLE_AGGRESSIVE;
+            }
+        }
     }
 
     /*

@@ -2,6 +2,7 @@ package org.Roguelike.generators.enemies;
 
 import org.Roguelike.collections.characteristics.Characteristic;
 import org.Roguelike.collections.enemies.Enemy;
+import org.Roguelike.collections.enemies.EnemyState;
 import org.Roguelike.model.enemies.stratagies.BehaviorStrategy;
 import org.Roguelike.model.enemies.stratagies.NightstandStrategy;
 import org.Roguelike.model.enemies.stratagies.SchoolkidStrategy;
@@ -57,21 +58,25 @@ public class EnemiesGenerator {
                     BehaviorStrategy strat;
                     int exp;
                     int health;
+                    EnemyState state;
                     if (type == 0) {
                         strat = new TeacherStrategy();
+                        state = EnemyState.MUTABLE_AGGRESSIVE;
                         exp = 15;
                         health = 35;
                     } else if (type == 1) {
+                        state = EnemyState.IMMUTABLE;
                         strat = new NightstandStrategy();
                         exp = 10;
                         health = 25;
                     } else {
+                        state = EnemyState.IMMUTABLE;
                         strat = new SchoolkidStrategy();
                         exp = 5;
                         health = 30;
                     }
 
-                    enemyList.add(new Enemy(exp, new Characteristic(health, health), MapElement.fromPoint(new Point(row, col)), strat));
+                    enemyList.add(new Enemy(exp, new Characteristic(health, health), MapElement.fromPoint(new Point(row, col)), strat, state));
                 }
             }
         }
