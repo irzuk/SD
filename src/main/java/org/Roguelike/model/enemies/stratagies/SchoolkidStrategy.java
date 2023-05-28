@@ -34,15 +34,15 @@ public class SchoolkidStrategy implements BehaviorStrategy {
 
     @Override
     public int fight(@NotNull CharacteristicsInfo heroCharacteristics) {
-        if (ChronoUnit.MILLIS.between(LocalDateTime.now(), lastFight) > DUR_MS) {
-            lastFight = LocalDateTime.now();
+        if (ChronoUnit.MILLIS.between(LocalDateTime.now(), lastFight) < DUR_MS) {
             return 0;
         }
+        lastFight = LocalDateTime.now();
         var res = (heroCharacteristics.cheerfullness.current - INIT_CHEER) + (heroCharacteristics.satiety.current - INIT_SATIETY);
         var DAMAGE_CHEER = -5;
         var DAMAGE_SATIETY = -5;
-        heroCharacteristics.cheerfullness.current -= DAMAGE_CHEER;
-        heroCharacteristics.satiety.current -= DAMAGE_SATIETY;
+        heroCharacteristics.decreaseCheerfullness(DAMAGE_CHEER);
+        heroCharacteristics.decreaseSatiety(DAMAGE_SATIETY);
         return res;
     }
 
