@@ -30,15 +30,12 @@ public class TeacherStrategy implements BehaviorStrategy {
         if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
             return new Vector(0, y);
         }
-        System.out.printf("Hero  location: (%d, %d)\n", heroLocation.leftBot().x(), heroLocation.leftBot().y());
-        System.out.printf("Enemy location: (%d, %d)\n", enemyLocation.leftBot().x(), enemyLocation.leftBot().y());
         return new Vector(x, 0);
     }
 
     @Override
     public int fight(@NotNull CharacteristicsInfo heroCharacteristics) {
         if (ChronoUnit.MILLIS.between(lastFight, LocalDateTime.now()) < DUR_MS) {
-            System.out.println("Timing fallback");
             return 0;
         }
         lastFight = LocalDateTime.now();

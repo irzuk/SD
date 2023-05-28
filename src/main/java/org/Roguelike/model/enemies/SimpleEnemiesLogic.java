@@ -54,7 +54,6 @@ public class SimpleEnemiesLogic implements EnemiesLogic {
         for (int i = 0; i < enemies.size(); i++) {
             var enemy = enemies.get(i);
             if (enemy.getEnemyLocation().intersects(heroLocation.getBounds2D())) {
-                System.out.println("Fight!");
                 boolean confused = enemy.fight(heroCharacteristics);
                 if (enemy.isDead()) {
                     enemies.remove(i);

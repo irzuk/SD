@@ -23,7 +23,6 @@ public class NightstandStrategy implements BehaviorStrategy {
     @Override
     public int fight(@NotNull CharacteristicsInfo heroCharacteristics) {
         if (ChronoUnit.MILLIS.between(lastFight, LocalDateTime.now()) < DUR_MS) {
-            System.out.println("Timing fallback");
             return 0;
         }
         lastFight = LocalDateTime.now();
@@ -31,7 +30,6 @@ public class NightstandStrategy implements BehaviorStrategy {
         var res = heroCharacteristics.cheerfullness.current / 3
                 + heroCharacteristics.satiety.current / 3;
 
-        System.out.printf(">>>>>> Suka = %d\n", res);
         var DAMAGE_CHEER = 5;
         var DAMAGE_SATIETY = 5;
         heroCharacteristics.decreaseCheerfullness(DAMAGE_CHEER);

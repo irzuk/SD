@@ -45,7 +45,6 @@ public class Enemy {
      */
     public boolean isDead() {
         assert health != null;
-        System.out.printf("Current health: %d\n", health.current);
         return health.current <= 0;
     }
 
@@ -62,7 +61,6 @@ public class Enemy {
     public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
         assert strategy != null;
         var dir = strategy.calculateDirection(heroLocation, enemyLocation);
-        System.out.printf("Direction: (%d, %d)\n", dir.getX(), dir.getY());
         if (state == EnemyState.MUTABLE_SNEAKY) {
             return new Vector(-dir.getX(), -dir.getY());
         }
@@ -98,7 +96,6 @@ public class Enemy {
     public boolean fight(CharacteristicsInfo heroCharacteristics) {
         assert strategy != null;
         var res = strategy.fight(heroCharacteristics);
-        System.out.printf("Damage = %d\n", res);
         if (res > 0) {
             assert health != null;
             health.current -= res;
