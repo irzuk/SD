@@ -18,7 +18,7 @@ public class ConfusedEnemy extends Enemy {
     private final Enemy entryEnemy;
     private LocalDateTime confuseTime;
 
-    private static final int CONFUSE_TIME_MS = 1000;
+    private static final int CONFUSE_TIME_MS = 100;
     public ConfusedEnemy(@NotNull Enemy entryEnemy) {
         this.entryEnemy = entryEnemy;
         confuseTime = LocalDateTime.now();

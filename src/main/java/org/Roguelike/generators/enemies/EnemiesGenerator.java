@@ -70,21 +70,21 @@ public class EnemiesGenerator {
                         exp = 15;
                         health = 35;
                         fstCnt += 1;
-                        if (fstCnt > 3) continue;
+                        if (fstCnt > 0) continue;
                     } else if (type == 1) {
                         state = EnemyState.IMMUTABLE;
                         strat = new NightstandStrategy();
                         exp = 10;
                         health = 25;
                         sndCnt += 1;
-                        if (sndCnt > 3) continue;
+                        if (sndCnt > 20) continue;
                     } else {
                         state = EnemyState.IMMUTABLE;
                         strat = new SchoolkidStrategy();
                         exp = 5;
                         health = 30;
                         thdCnt += 1;
-                        if (thdCnt > 3) continue;
+                        if (thdCnt > 0) continue;
                     }
 
                     enemyList.add(new Enemy(exp, new Characteristic(health, health), MapElement.fromPoint(new Point(row, col)), strat, state));
