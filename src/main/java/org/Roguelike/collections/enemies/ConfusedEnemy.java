@@ -25,7 +25,7 @@ public class ConfusedEnemy extends Enemy {
      * Return:
      *  Vector - направление в котором будет двигаться враг.
      * Description:
-     *  Движется в произвольном направлении.
+     *  Движется в произвольном направлении. Эффект должен быть временным.
      */
     @Override
     public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
