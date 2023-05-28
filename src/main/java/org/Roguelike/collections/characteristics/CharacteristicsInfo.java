@@ -21,4 +21,12 @@ public class CharacteristicsInfo {
         this.health = health;
         this.experience = experience;
     }
+
+    public void decreaseCheerfullness(int val) {
+        cheerfullness.current = Math.max(0, cheerfullness.current - val);
+    }
+
+    public void decreaseSatiety(int val) {
+        satiety.current = Math.max(0, satiety.current - val);
+    }
 }
