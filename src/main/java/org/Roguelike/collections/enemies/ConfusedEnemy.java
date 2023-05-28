@@ -6,6 +6,8 @@ import org.Roguelike.collections.map.MapElementsParameters;
 import org.Roguelike.collections.map.elements.MapElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
@@ -14,9 +16,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ConfusedEnemy extends Enemy {
     @NotNull
     private final Enemy entryEnemy;
+    private LocalDateTime confuseTime;
 
+    private static final int CONFUSE_TIME_MS = 1000;
     public ConfusedEnemy(@NotNull Enemy entryEnemy) {
         this.entryEnemy = entryEnemy;
+        confuseTime = LocalDateTime.now();
     }
 
     /*
@@ -29,6 +34,10 @@ public class ConfusedEnemy extends Enemy {
      */
     @Override
     public @NotNull Vector findDirection(@NotNull MapElement heroLocation) {
+        if (ChronoUnit.MILLIS.between(LocalDateTime.now(), confuseTime) >= CONFUSE_TIME_MS) {
+            return entryEnemy.findDirection(heroLocation);
+        }
+
         var side = ThreadLocalRandom.current().nextInt(0, 4);
 
         if (side == 0) return new Vector(0, MapElementsParameters.CELL_BORDER);
